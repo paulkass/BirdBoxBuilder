@@ -34,23 +34,26 @@ renderer.setClearColor( scene.fog.color, 1 );
 
 function render() {
 	var worldVector = camera.getWorldDirection();
+	var upVector = new THREE.Vector3(0,1,0);
+	var tiltVector = new THREE.Vector3();
+	tiltVector.crossVectors(worldVector,upVector).normalize();
 	
 	// Mouse Position -> Rotation Code
 	// -------------------------------
 	if (mousePositionX-center[0]>controlBox) {
-		worldVector.applyAxisAngle(new THREE.Vector3(0,1,0), -ANGLE_OF_ROTATION);
+		worldVector.applyAxisAngle(upVector, -ANGLE_OF_ROTATION);
 	}
 	
 	if (mousePositionX-center[0]<-controlBox) {
-		worldVector.applyAxisAngle(new THREE.Vector3(0,1,0), ANGLE_OF_ROTATION);
+		worldVector.applyAxisAngle(upVector, ANGLE_OF_ROTATION);
 	}
 	
 	if (mousePositionY-center[1]>controlBox) {
-		worldVector.applyAxisAngle(new THREE.Vector3(1,0,0), -ANGLE_OF_ROTATION);
+		worldVector.applyAxisAngle(tiltVector, -ANGLE_OF_ROTATION);
 	}
 	
 	if (mousePositionY-center[1]<-controlBox) {
-		worldVector.applyAxisAngle(new THREE.Vector3(1,0,0), ANGLE_OF_ROTATION);
+		worldVector.applyAxisAngle(tiltVector, ANGLE_OF_ROTATION);
 	}
 	
 	// -------------------------------
@@ -62,7 +65,7 @@ function render() {
 	renderer.render( scene, camera );
 }
 render();
-
+/*
 $(document).ready(function() {
 	document.captureEvents(Event.MOUSEMOVE)
 	document.onmousemove = function (e) {
@@ -70,4 +73,8 @@ $(document).ready(function() {
 		mousePositionY = e.pageY;
 	};
 });
-
+*/
+$("canvas").mousemove(function(e) {
+	mousePositionX = e.pageX;
+	mousePositionY = e.pageY;
+});
