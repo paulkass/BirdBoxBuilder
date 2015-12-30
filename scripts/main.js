@@ -20,11 +20,6 @@ var grid = new THREE.GridHelper( 200, 10 );
 grid.setColors( 0x000000, 0x000000 );
 scene.add( grid );
 
-// var geometry = new THREE.PlaneGeometry( 20, 20, 32 );
-// var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-// var plane = new THREE.Mesh( geometry, material );
-// scene.add( plane );
-
 scene.fog = new THREE.FogExp2( 0x000000, 0.0128 );
 renderer.setClearColor( scene.fog.color, 1 );
 
