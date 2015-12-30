@@ -65,16 +65,10 @@ function render() {
 	renderer.render( scene, camera );
 }
 render();
-/*
+
 $(document).ready(function() {
-	document.captureEvents(Event.MOUSEMOVE)
-	document.onmousemove = function (e) {
-		mousePositionX = e.pageX;
-		mousePositionY = e.pageY;
-	};
-});
-*/
-$("canvas").mousemove(function(e) {
+	$("canvas").mousemove(function(e) {
 	mousePositionX = e.pageX;
 	mousePositionY = e.pageY;
+});
 });
