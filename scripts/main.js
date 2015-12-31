@@ -15,9 +15,8 @@ var controlBox = Math.floor(Math.min(window.innerWidth, window.innerHeight)/4);
 var mousePositionX = center[0];
 var mousePositionY = center[1];
 
-var middle = false;
+var rightButton = false;
 var mouseBuffer = center[1];
-
 
 var moveForward = false;
 var moveBackward = false;
@@ -58,7 +57,7 @@ updateCameraReticle();
 scene.add(userReticle);
 
 function render() {
-	if(middle)
+	if(rightButton)
 		pan();
 	else
 		rotate();	
@@ -185,12 +184,11 @@ $(document).ready(function() {
 
 			break;
 		case 2:
-			e.preventDefault();
-			middle = true;
-			mouseBuffer = mousePositionY;
+
 			break;
 		case 3:
-
+			rightButton = true;
+			mouseBuffer = mousePositionY;
 			break;
 	}
 	});
@@ -200,12 +198,11 @@ $(document).ready(function() {
 
 			break;
 		case 2:
-			e.preventDefault();
-			mouseBuffer = center[1];
-			middle = false;
+
 			break;
 		case 3:
-
+			rightButton = false;
+			mouseBuffer = center[1];
 			break;
 		}
 	});	
@@ -219,3 +216,4 @@ $(document).ready(function() {
 		assignKeyMovementValues(false, key);
 	});
 });
+window.oncontextmenu = function() { return false };
