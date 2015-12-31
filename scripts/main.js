@@ -6,7 +6,7 @@
 var ANGLE_OF_ROTATION = Math.PI/600;
 var LEFT_RIGHT_ROTATION_COEFFICIENT = 2;
 var MOVEMENT_SPEED = 0.1; // "Units" per render tick
-var RETICLE_RADIUS = 0.1;
+var RETICLE_RADIUS = 0.001;
 var WORLD_TO_RETICLE_SCALAR = 0.2;
 // ---------
 
@@ -52,7 +52,7 @@ scene.fog = new THREE.FogExp2( 0x000000, 0.0128 );
 renderer.setClearColor( scene.fog.color, 1 );
 
 var userReticleMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
-var userReticleGeometry = new THREE.CircleGeometry(RETICLE_RADIUS, 32);
+var userReticleGeometry = new THREE.SphereGeometry(RETICLE_RADIUS, 100);
 var userReticle = new THREE.Mesh(userReticleGeometry, userReticleMaterial);
 updateCameraReticle();
 scene.add(userReticle);
@@ -76,16 +76,6 @@ function updateCameraReticle() {
 	userReticle.position.y = reticlePositionVector.y;
 	userReticle.position.z = reticlePositionVector.z;
 	
-	var yVector = new THREE.Vector3(0,1,0);
-	var xVector = new THREE.Vector3(1,0,0);
-	var zVector = new THREE.Vector3(0,0,1);
-	
-	var xzProjection = worldVector.clone().projectOnPlane(yVector).normalize();
-	if (xzProjection.clone().cross(zVector.clone().multiplyScalar(-1).normalize()).y>0) {
-		userReticle.rotation.y = -Math.acos(xzProjection.clone().dot(zVector.clone().multiplyScalar(-1).normalize()));
-	} else {
-		userReticle.rotation.y = Math.acos(xzProjection.clone().dot(zVector.clone().multiplyScalar(-1).normalize()));
-	}
 }
 
 function pan() {
