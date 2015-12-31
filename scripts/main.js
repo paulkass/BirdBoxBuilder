@@ -1,12 +1,22 @@
 //  Some initial variables
 //  **********************
-var ANGLE_OF_ROTATION = Math.PI/200;
+var ANGLE_OF_ROTATION = Math.PI/600;
+var LEFT_RIGHT_ROTATION_COEFFICIENT = 2;
+var MOVEMENT_SPEED = 0.1; // "Units" per render tick
 var center = [Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2)];
 var controlBox = Math.floor(Math.min(window.innerWidth, window.innerHeight)/4);
 var mousePositionX = center[0];
 var mousePositionY = center[1];
+
 var middle = false;
 var mouseBuffer = center[1];
+
+
+var moveForward = false;
+var moveBackward = false;
+var moveRight = false;
+var moveLeft = false;
+
 //  **********************
 
 var scene = new THREE.Scene();
@@ -53,19 +63,19 @@ function pan() {
 	camera.position.add(worldProjection.multiplyScalar(delta));
 }
 function rotate() {
-	var worldVector = camera.getWorldDirection();
+	const worldVector = camera.getWorldDirection();
 	var upVector = new THREE.Vector3(0,1,0);
 	var tiltVector = new THREE.Vector3();
-	tiltVector.crossVectors(worldVector,upVector).normalize();
+	tiltVector.crossVectors(worldVector.clone(),upVector.clone()).normalize();
 	
 	// Mouse Position -> Rotation Code
 	// -------------------------------
 	if (mousePositionX-center[0]>controlBox) {
-		worldVector.applyAxisAngle(upVector, -ANGLE_OF_ROTATION);
+		worldVector.applyAxisAngle(upVector, -LEFT_RIGHT_ROTATION_COEFFICIENT*ANGLE_OF_ROTATION);
 	}
 	
 	if (mousePositionX-center[0]<-controlBox) {
-		worldVector.applyAxisAngle(upVector, ANGLE_OF_ROTATION);
+		worldVector.applyAxisAngle(upVector, LEFT_RIGHT_ROTATION_COEFFICIENT*ANGLE_OF_ROTATION);
 	}
 	
 	if (mousePositionY-center[1]>controlBox) {
@@ -78,14 +88,53 @@ function rotate() {
 	
 	// -------------------------------
 	
+	// Key Pressed -> Camera Lateral Movement
+	// --------------------------------------
+	
+	var worldVector2 = worldVector.clone();
+	var normWorldVector = worldVector2.clone().normalize();
+	var projOntoXZPlane = worldVector2.clone().projectOnPlane(upVector);
+	var lateralVector = projOntoXZPlane.cross(upVector).normalize();
+	
+	if (moveForward) {
+		assignCameraPositions(normWorldVector.x, normWorldVector.y, normWorldVector.z);
+	}
+	
+	if (moveBackward) {
+		assignCameraPositions(-normWorldVector.x, -normWorldVector.y, -normWorldVector.z);
+	}
+	
+	if (moveRight) {
+		assignCameraPositions(lateralVector.x, 0, lateralVector.z);
+	}
+	
+	if (moveLeft) {
+		assignCameraPositions(-lateralVector.x, 0, -lateralVector.z);
+	}
+	
+	// --------------------------------------
+	
 	var cameraVector = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
 	camera.lookAt(worldVector.add(cameraVector));
 }
 
+function assignCameraPositions(x,y,z) {
+	
+	camera.position.x = camera.position.x+MOVEMENT_SPEED*x;
+	
+	var potentialCameraY = camera.position.y+MOVEMENT_SPEED*y;
+	var cameraValueY = 0.1;
+	if (potentialCameraY>=0.1) {
+		cameraValueY = potentialCameraY;
+	}
+	camera.position.y = cameraValueY;
+	camera.position.z = camera.position.z+MOVEMENT_SPEED*z;
+}
+
 $(document).ready(function() {
 	$("canvas").mousemove(function(e) {
-	mousePositionX = e.pageX;
-	mousePositionY = e.pageY;
+		mousePositionX = e.pageX;
+		mousePositionY = e.pageY;
 	});
 	$("canvas").mousedown(function(e) {
 	switch(e.which){
@@ -115,6 +164,45 @@ $(document).ready(function() {
 		case 3:
 
 			break;
-	}	
+		}
+	});	
+	$(document).keydown(function(e) {
+		var key = e.key.toLowerCase();
+		switch (key) {
+			case "w": 
+				moveForward = true;
+			break;
+			case "s":
+				moveBackward = true;
+			break;
+			case "d":
+				moveRight = true;
+			break;
+			case "a":
+				moveLeft = true;
+			break;
+			default:
+				// do nothing
+		}
+	});
+	
+	$(document).keyup(function(e) {
+		var key = e.key.toLowerCase();
+		switch (key) {
+			case "w": 
+				moveForward = false;
+			break;
+			case "s":
+				moveBackward = false;
+			break;
+			case "d":
+				moveRight = false;
+			break;
+			case "a":
+				moveLeft = false;
+			break;
+			default:
+				// do nothing
+		}
 	});
 });
