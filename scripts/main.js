@@ -1,10 +1,12 @@
 //  Some initial variables
 //  **********************
 var ANGLE_OF_ROTATION = Math.PI/200;
-var center = [Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2)]
+var center = [Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2)];
 var controlBox = Math.floor(Math.min(window.innerWidth, window.innerHeight)/4);
 var mousePositionX = center[0];
 var mousePositionY = center[1];
+var middle = false;
+var mouseBuffer = center[1];
 //  **********************
 
 var scene = new THREE.Scene();
@@ -23,7 +25,7 @@ planeGeometry.rotateX(Math.PI/2);
 var planeMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide})
 var plane = new THREE.Mesh(planeGeometry, planeMaterial);
 plane.position.y=-0.5;
-scene.add(plane)
+scene.add(plane);
 
 var grid = new THREE.GridHelper( 200, 10 );
 grid.setColors( 0x000000, 0x000000 );
@@ -33,6 +35,24 @@ scene.fog = new THREE.FogExp2( 0x000000, 0.0128 );
 renderer.setClearColor( scene.fog.color, 1 );
 
 function render() {
+	if(middle)
+		pan();
+	else
+		rotate();	
+	requestAnimationFrame( render );
+	renderer.render( scene, camera );
+}
+render();
+
+function pan() {
+	var worldProjection = camera.getWorldDirection();
+	worldProjection.projectOnPlane(new THREE.Vector3(0,1,0)).normalize();
+	var delta = 0;
+	if(mousePositionY != mouseBuffer)
+		delta = mousePositionY > mouseBuffer ? -.5 : .5;
+	camera.position.add(worldProjection.multiplyScalar(delta));
+}
+function rotate() {
 	var worldVector = camera.getWorldDirection();
 	var upVector = new THREE.Vector3(0,1,0);
 	var tiltVector = new THREE.Vector3();
@@ -60,15 +80,41 @@ function render() {
 	
 	var cameraVector = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
 	camera.lookAt(worldVector.add(cameraVector));
-	
-	requestAnimationFrame( render );
-	renderer.render( scene, camera );
 }
-render();
 
 $(document).ready(function() {
 	$("canvas").mousemove(function(e) {
 	mousePositionX = e.pageX;
 	mousePositionY = e.pageY;
-});
+	});
+	$("canvas").mousedown(function(e) {
+	switch(e.which){
+		case 1:
+
+			break;
+		case 2:
+			e.preventDefault();
+			middle = true;
+			mouseBuffer = mousePositionY;
+			break;
+		case 3:
+
+			break;
+	}
+	});
+	$("canvas").mouseup(function(e) {
+	switch(e.which){
+		case 1:
+
+			break;
+		case 2:
+			e.preventDefault();
+			mouseBuffer = center[1];
+			middle = false;
+			break;
+		case 3:
+
+			break;
+	}	
+	});
 });
