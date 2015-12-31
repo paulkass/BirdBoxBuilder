@@ -80,9 +80,7 @@ function updateCameraReticle() {
 function pan() {
 	var worldProjection = camera.getWorldDirection();
 	worldProjection.projectOnPlane(new THREE.Vector3(0,1,0)).normalize();
-	var delta = 0;
-	if(mousePositionY != mouseBuffer)
-		delta = mousePositionY > mouseBuffer ? -.5 : .5;
+	var delta = (mouseBuffer -mousePositionY)/window.innerWidth/2;
 	camera.position.add(worldProjection.multiplyScalar(delta));
 }
 function rotate() {
@@ -174,11 +172,11 @@ function assignKeyMovementValues(value, key) {
 }
 
 $(document).ready(function() {
-	$("canvas").mousemove(function(e) {
+	$(document).mousemove(function(e) {
 		mousePositionX = e.pageX;
 		mousePositionY = e.pageY;
 	});
-	$("canvas").mousedown(function(e) {
+	$(document).mousedown(function(e) {
 	switch(e.which){
 		case 1:
 
@@ -192,7 +190,7 @@ $(document).ready(function() {
 			break;
 	}
 	});
-	$("canvas").mouseup(function(e) {
+	$(document).mouseup(function(e) {
 	switch(e.which){
 		case 1:
 
