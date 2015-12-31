@@ -57,10 +57,10 @@ updateCameraReticle();
 scene.add(userReticle);
 
 function render() {
-	if(rightButton)
+	if(rightButton) {
 		pan();
-	else
-		rotate();	
+	}
+	rotate();	
 	updateCameraReticle();
 	requestAnimationFrame( render );
 	renderer.render( scene, camera );
