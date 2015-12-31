@@ -131,6 +131,25 @@ function assignCameraPositions(x,y,z) {
 	camera.position.z = camera.position.z+MOVEMENT_SPEED*z;
 }
 
+function assignKeyMovementValues(value, key) {
+	switch (key) {
+			case "w": 
+				moveForward = value;
+			break;
+			case "s":
+				moveBackward = value;
+			break;
+			case "d":
+				moveRight = value;
+			break;
+			case "a":
+				moveLeft = value;
+			break;
+			default:
+				// do nothing
+		}
+}
+
 $(document).ready(function() {
 	$("canvas").mousemove(function(e) {
 		mousePositionX = e.pageX;
@@ -168,41 +187,11 @@ $(document).ready(function() {
 	});	
 	$(document).keydown(function(e) {
 		var key = e.key.toLowerCase();
-		switch (key) {
-			case "w": 
-				moveForward = true;
-			break;
-			case "s":
-				moveBackward = true;
-			break;
-			case "d":
-				moveRight = true;
-			break;
-			case "a":
-				moveLeft = true;
-			break;
-			default:
-				// do nothing
-		}
+		assignKeyMovementValues(true, key);
 	});
 	
 	$(document).keyup(function(e) {
 		var key = e.key.toLowerCase();
-		switch (key) {
-			case "w": 
-				moveForward = false;
-			break;
-			case "s":
-				moveBackward = false;
-			break;
-			case "d":
-				moveRight = false;
-			break;
-			case "a":
-				moveLeft = false;
-			break;
-			default:
-				// do nothing
-		}
+		assignKeyMovementValues(false, key);
 	});
 });
