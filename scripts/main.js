@@ -1,8 +1,15 @@
 //  Some initial variables
 //  **********************
+
+// CONSTANTS
+// ---------
 var ANGLE_OF_ROTATION = Math.PI/600;
 var LEFT_RIGHT_ROTATION_COEFFICIENT = 2;
 var MOVEMENT_SPEED = 0.1; // "Units" per render tick
+var RETICLE_RADIUS = 0.1;
+var WORLD_TO_RETICLE_SCALAR = 0.2;
+// ---------
+
 var center = [Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2)];
 var controlBox = Math.floor(Math.min(window.innerWidth, window.innerHeight)/4);
 var mousePositionX = center[0];
@@ -44,15 +51,42 @@ scene.add( grid );
 scene.fog = new THREE.FogExp2( 0x000000, 0.0128 );
 renderer.setClearColor( scene.fog.color, 1 );
 
+var userReticleMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
+var userReticleGeometry = new THREE.CircleGeometry(RETICLE_RADIUS, 32);
+var userReticle = new THREE.Mesh(userReticleGeometry, userReticleMaterial);
+updateCameraReticle();
+scene.add(userReticle);
+
 function render() {
 	if(middle)
 		pan();
 	else
 		rotate();	
+	updateCameraReticle();
 	requestAnimationFrame( render );
 	renderer.render( scene, camera );
 }
 render();
+
+function updateCameraReticle() {
+	var cameraVector = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
+	var worldVector= camera.getWorldDirection();
+	var reticlePositionVector = cameraVector.clone().add(worldVector.clone().normalize().multiplyScalar(WORLD_TO_RETICLE_SCALAR));
+	userReticle.position.x = reticlePositionVector.x;
+	userReticle.position.y = reticlePositionVector.y;
+	userReticle.position.z = reticlePositionVector.z;
+	
+	var yVector = new THREE.Vector3(0,1,0);
+	var xVector = new THREE.Vector3(1,0,0);
+	var zVector = new THREE.Vector3(0,0,1);
+	
+	var xzProjection = worldVector.clone().projectOnPlane(yVector).normalize();
+	if (xzProjection.clone().cross(zVector.clone().multiplyScalar(-1).normalize()).y>0) {
+		userReticle.rotation.y = -Math.acos(xzProjection.clone().dot(zVector.clone().multiplyScalar(-1).normalize()));
+	} else {
+		userReticle.rotation.y = Math.acos(xzProjection.clone().dot(zVector.clone().multiplyScalar(-1).normalize()));
+	}
+}
 
 function pan() {
 	var worldProjection = camera.getWorldDirection();
