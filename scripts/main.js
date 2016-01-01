@@ -24,12 +24,10 @@ var moveBackward = false;
 var moveRight = false;
 var moveLeft = false;
 
-<<<<<<< HEAD
+
 var placeButtonPressed = false;
-=======
 var holdingPlank = false;
 var planks = [];
->>>>>>> 6cda4ab5971034447f4989fa12c8129a2a96bd54
 
 //  **********************
 
@@ -189,11 +187,12 @@ function assignKeyMovementValues(value, key) {
 			break;
 			case " ":
 				if (placeButtonPressed) {
-					
+					var tree = returnTreeAtPosition(0,0);
+					scene.add(tree);
 				}
 			break;
 			default:
-				// do nothing
+				alert(key);
 		}
 }
 
