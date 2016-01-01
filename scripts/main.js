@@ -188,12 +188,32 @@ function assignKeyMovementValues(value, key) {
 			case " ":
 				if (placeButtonPressed) {
 					var tree = returnTreeAtPosition(0,0);
+					var placementVector = getPlacementSpot();
+					getObjectWithPositionVector(tree, placementVector);
 					scene.add(tree);
 				}
 			break;
 			default:
 				alert(key);
 		}
+}
+
+function getPlacementSpot() {
+	var ray = new THREE.Ray(new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z), camera.getWorldDirection());
+	var placementVector = new THREE.Vector3(0,0,0);
+	if (false) {
+		// This clause should be executed if the ray intersects another object other than the base plane
+	} else {
+		ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0,1,0), 0), placementVector);
+	}
+	return placementVector;
+}
+
+function getObjectWithPositionVector(object, vector) {
+	object.position.x = vector.x;
+	object.position.y = vector.y;
+	object.position.z = vector.z;
+	return object;
 }
 
 function addPlank () {
