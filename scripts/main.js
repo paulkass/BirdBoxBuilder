@@ -23,6 +23,8 @@ var moveBackward = false;
 var moveRight = false;
 var moveLeft = false;
 
+var placeButtonPressed = false;
+
 //  **********************
 
 var scene = new THREE.Scene();
@@ -166,6 +168,18 @@ function assignKeyMovementValues(value, key) {
 			case "a":
 				moveLeft = value;
 			break;
+			case "1":
+				if (placeButtonPressed) {
+					placeButtonPressed = false;
+				} else {
+					placeButtonPressed = true;
+				}
+			break;
+			case " ":
+				if (placeButtonPressed) {
+					
+				}
+			break;
 			default:
 				// do nothing
 		}
@@ -215,12 +229,10 @@ $(document).ready(function() {
 		}
 	});	
 	$(document).keydown(function(e) {
-//		var key = e.key.toLowerCase();
 		assignKeyMovementValues(true, e.key);
 	});
 	
 	$(document).keyup(function(e) {
-//		var key = e.key.toLowerCase();
 		assignKeyMovementValues(false, e.key);
 	});
 	$(document).keypress(function(e) {
