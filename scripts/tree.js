@@ -1,9 +1,20 @@
-function returnTreeAtPosition(x,z) {
-	var geometry = new THREE.CylinderGeometry(1,1,100,32,1,false);
-	var material = new THREE.MeshBasicMaterial({color: 0x964b00});
-	var tree = new THREE.Mesh(geometry, material);
-	tree.position.y = 0;
-	tree.position.x = x;
-	tree.position.z = z;
-	return tree;
+var objectLoader = new THREE.ObjectLoader();
+
+function placeTreeAtVector(vector) {
+	// Accounting for details in the tree geometry
+	// -------------------------------------------
+	vector.setZ(vector.z+6);
+	vector.setX(vector.x-2.5);
+	// -------------------------------------------
+	objectLoader.load("src/tree-05.json", function(obj) {
+		var tree = getObjectWithPositionVector(obj, vector);
+		scene.add(tree);
+	});
+}
+
+function getObjectWithPositionVector(object, vector) {
+	object.position.x = vector.x;
+	object.position.y = vector.y;
+	object.position.z = vector.z;
+	return object;
 }

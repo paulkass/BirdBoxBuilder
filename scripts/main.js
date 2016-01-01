@@ -187,10 +187,8 @@ function assignKeyMovementValues(value, key) {
 			break;
 			case " ":
 				if (placeButtonPressed) {
-					var tree = returnTreeAtPosition(0,0);
 					var placementVector = getPlacementSpot();
-					getObjectWithPositionVector(tree, placementVector);
-					scene.add(tree);
+					placeTreeAtVector(placementVector);
 				}
 			break;
 			default:
@@ -207,13 +205,6 @@ function getPlacementSpot() {
 		ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0,1,0), 0), placementVector);
 	}
 	return placementVector;
-}
-
-function getObjectWithPositionVector(object, vector) {
-	object.position.x = vector.x;
-	object.position.y = vector.y;
-	object.position.z = vector.z;
-	return object;
 }
 
 function addPlank () {
