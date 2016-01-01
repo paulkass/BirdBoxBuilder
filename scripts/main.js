@@ -68,9 +68,9 @@ function render() {
 render();
 
 function updateCameraReticle() {
-	var cameraVector = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
-	var worldVector= camera.getWorldDirection();
-	var reticlePositionVector = cameraVector.clone().add(worldVector.clone().normalize().multiplyScalar(WORLD_TO_RETICLE_SCALAR));
+	var cameraVector = camera.position.clone();
+	var worldVector = camera.getWorldDirection().clone().normalize();
+	var reticlePositionVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_RETICLE_SCALAR));
 	userReticle.position.x = reticlePositionVector.x;
 	userReticle.position.y = reticlePositionVector.y;
 	userReticle.position.z = reticlePositionVector.z;
@@ -80,7 +80,7 @@ function updateCameraReticle() {
 function pan() {
 	var worldProjection = camera.getWorldDirection();
 	worldProjection.projectOnPlane(new THREE.Vector3(0,1,0)).normalize();
-	var delta = (mouseBuffer -mousePositionY)/window.innerWidth/2;
+	var delta = (mouseBuffer -mousePositionY)/window.innerWidth;
 	camera.position.add(worldProjection.multiplyScalar(delta));
 }
 function rotate() {
@@ -171,6 +171,16 @@ function assignKeyMovementValues(value, key) {
 		}
 }
 
+function addPlank () {
+	var worldVector = camera.getWorldDirection().clone().normalize();
+	var placeVector = userReticle.position.clone().add(worldVector.multiplyScalar(2 -WORLD_TO_RETICLE_SCALAR));
+	var plankMaterial = new THREE.MeshBasicMaterial({color: 0x804000, fog: true});
+	var plankGeometry = new THREE.BoxGeometry(1, 1, 1);
+	var plank = new THREE.Mesh(plankGeometry, plankMaterial);
+	plank.position.set(placeVector.x, placeVector.y, placeVector.z);
+	scene.add(plank);
+}
+
 $(document).ready(function() {
 	$(document).mousemove(function(e) {
 		mousePositionX = e.pageX;
@@ -191,7 +201,7 @@ $(document).ready(function() {
 	}
 	});
 	$(document).mouseup(function(e) {
-	switch(e.which){
+		switch(e.which){
 		case 1:
 
 			break;
@@ -205,13 +215,22 @@ $(document).ready(function() {
 		}
 	});	
 	$(document).keydown(function(e) {
-		var key = e.key.toLowerCase();
-		assignKeyMovementValues(true, key);
+//		var key = e.key.toLowerCase();
+		assignKeyMovementValues(true, e.key);
 	});
 	
 	$(document).keyup(function(e) {
-		var key = e.key.toLowerCase();
-		assignKeyMovementValues(false, key);
+//		var key = e.key.toLowerCase();
+		assignKeyMovementValues(false, e.key);
+	});
+	$(document).keypress(function(e) {
+		switch(e.keyCode){
+		case 49:
+			addPlank();
+			break;
+		default:
+			break;
+		}
 	});
 });
 window.oncontextmenu = function() { return false };
