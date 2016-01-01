@@ -29,44 +29,57 @@ var placeButtonPressed = false;
 var holdingPlank = false;
 var planks = [];
 
+var scene;
+var camera;
+var renderer;
+var light;
+var plane
+var grid;
+var userReticle;
+
 //  **********************
 
-var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+init();
 
-camera.position.y=3;
-camera.position.z=5;
-camera.lookAt(new THREE.Vector3(0,0,0));
+function init() {
 
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
+	scene = new THREE.Scene();
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
-scene.add(light);
+	camera.position.y=3;
+	camera.position.z=5;
+	camera.lookAt(new THREE.Vector3(0,0,0));
 
-var planeGeometry = new THREE.PlaneGeometry(1000,1000, 1,1);
-planeGeometry.rotateX(Math.PI/2);
-var planeMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide})
-var plane = new THREE.Mesh(planeGeometry, planeMaterial);
-plane.position.y=-0.5;
-scene.add(plane);
+	renderer = new THREE.WebGLRenderer();
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	document.body.appendChild( renderer.domElement );
 
-var grid = new THREE.GridHelper( 200, 10 );
-grid.setColors( 0x000000, 0x000000 );
-scene.add(grid);
-var axisHelper = new THREE.AxisHelper( 5 );
-scene.add(axisHelper);
+	light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+	scene.add(light);
 
+	var planeGeometry = new THREE.PlaneGeometry(1000,1000, 1,1);
+	planeGeometry.rotateX(Math.PI/2);
+	var planeMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide})
+	plane = new THREE.Mesh(planeGeometry, planeMaterial);
+	plane.position.y=-0.5;
+	scene.add(plane);
 
-scene.fog = new THREE.FogExp2( 0x000000, 0.0128 );
-renderer.setClearColor( scene.fog.color, 1 );
+	grid = new THREE.GridHelper( 200, 10 );
+	grid.setColors( 0x000000, 0x000000 );
+	scene.add(grid);
+	var axisHelper = new THREE.AxisHelper( 5 );
+	scene.add(axisHelper);
 
-var userReticleMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
-var userReticleGeometry = new THREE.SphereGeometry(RETICLE_RADIUS, 100);
-var userReticle = new THREE.Mesh(userReticleGeometry, userReticleMaterial);
-updateCameraReticle();
-scene.add(userReticle);
+	scene.fog = new THREE.FogExp2( 0x000000, 0.0128 );
+	renderer.setClearColor( scene.fog.color, 1 );
+
+	var userReticleMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
+	var userReticleGeometry = new THREE.SphereGeometry(RETICLE_RADIUS, 100);
+	userReticle = new THREE.Mesh(userReticleGeometry, userReticleMaterial);
+	updateCameraReticle();
+	scene.add(userReticle);
+
+}
 
 function render() {
 	if(rightButton) {
