@@ -8,6 +8,7 @@ var LEFT_RIGHT_ROTATION_COEFFICIENT = 2;
 var MOVEMENT_SPEED = 0.1; // "Units" per render tick
 var RETICLE_RADIUS = 0.001;
 var WORLD_TO_RETICLE_SCALAR = 0.2;
+var WORLD_TO_PLANK_SCALAR = 10;
 // ---------
 
 var center = [Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2)];
@@ -23,6 +24,9 @@ var moveBackward = false;
 var moveRight = false;
 var moveLeft = false;
 
+var holdingPlank = false;
+var planks = [];
+
 //  **********************
 
 var scene = new THREE.Scene();
@@ -36,6 +40,9 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
+var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+scene.add(light);
+
 var planeGeometry = new THREE.PlaneGeometry(1000,1000, 1,1);
 planeGeometry.rotateX(Math.PI/2);
 var planeMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide})
@@ -45,7 +52,10 @@ scene.add(plane);
 
 var grid = new THREE.GridHelper( 200, 10 );
 grid.setColors( 0x000000, 0x000000 );
-scene.add( grid );
+scene.add(grid);
+var axisHelper = new THREE.AxisHelper( 5 );
+scene.add(axisHelper);
+
 
 scene.fog = new THREE.FogExp2( 0x000000, 0.0128 );
 renderer.setClearColor( scene.fog.color, 1 );
@@ -71,9 +81,13 @@ function updateCameraReticle() {
 	var cameraVector = camera.position.clone();
 	var worldVector = camera.getWorldDirection().clone().normalize();
 	var reticlePositionVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_RETICLE_SCALAR));
-	userReticle.position.x = reticlePositionVector.x;
-	userReticle.position.y = reticlePositionVector.y;
-	userReticle.position.z = reticlePositionVector.z;
+	userReticle.position.set(reticlePositionVector.x, reticlePositionVector.y, reticlePositionVector.z)
+	if(holdingPlank)
+	{
+		var plankPos = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
+		planks[planks.length -1].position.set(plankPos.x, plankPos.y, plankPos.z);
+		planks[planks.length -1].lookAt(worldVector.add(cameraVector));
+	}
 	
 }
 
@@ -91,21 +105,17 @@ function rotate() {
 	
 	// Mouse Position -> Rotation Code
 	// -------------------------------
-	if (mousePositionX-center[0]>controlBox) {
+	if (mousePositionX-center[0]>controlBox)
 		worldVector.applyAxisAngle(upVector, -LEFT_RIGHT_ROTATION_COEFFICIENT*ANGLE_OF_ROTATION);
-	}
 	
-	if (mousePositionX-center[0]<-controlBox) {
+	if (mousePositionX-center[0]<-controlBox)
 		worldVector.applyAxisAngle(upVector, LEFT_RIGHT_ROTATION_COEFFICIENT*ANGLE_OF_ROTATION);
-	}
-	
-	if (mousePositionY-center[1]>controlBox) {
+
+	if (mousePositionY-center[1]>controlBox)
 		worldVector.applyAxisAngle(tiltVector, -ANGLE_OF_ROTATION);
-	}
-	
-	if (mousePositionY-center[1]<-controlBox) {
+
+	if (mousePositionY-center[1]<-controlBox)
 		worldVector.applyAxisAngle(tiltVector, ANGLE_OF_ROTATION);
-	}
 	
 	// -------------------------------
 	
@@ -172,13 +182,12 @@ function assignKeyMovementValues(value, key) {
 }
 
 function addPlank () {
-	var worldVector = camera.getWorldDirection().clone().normalize();
-	var placeVector = userReticle.position.clone().add(worldVector.multiplyScalar(2 -WORLD_TO_RETICLE_SCALAR));
-	var plankMaterial = new THREE.MeshBasicMaterial({color: 0x804000, fog: true});
+	var worldVector = camera.getWorldDirection().clone().projectOnPlane(new THREE.Vector3(0,1,0)).normalize();
+	var plankMaterial = new THREE.MeshLambertMaterial({color: 0x804000, fog: true});
 	var plankGeometry = new THREE.BoxGeometry(1, 1, 1);
 	var plank = new THREE.Mesh(plankGeometry, plankMaterial);
-	plank.position.set(placeVector.x, placeVector.y, placeVector.z);
 	scene.add(plank);
+	planks.push(plank);
 }
 
 $(document).ready(function() {
@@ -226,7 +235,17 @@ $(document).ready(function() {
 	$(document).keypress(function(e) {
 		switch(e.keyCode){
 		case 49:
-			addPlank();
+			if(!holdingPlank)
+			{
+				addPlank();
+				holdingPlank = true;			
+			}
+			break;
+		case 32:
+			if(holdingPlank)
+			{
+				holdingPlank = false;
+			}
 			break;
 		default:
 			break;
