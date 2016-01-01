@@ -80,13 +80,7 @@ function updateCameraReticle() {
 function pan() {
 	var worldProjection = camera.getWorldDirection();
 	worldProjection.projectOnPlane(new THREE.Vector3(0,1,0)).normalize();
-<<<<<<< HEAD
 	var delta = (mouseBuffer -mousePositionY)/window.innerWidth;
-=======
-	var delta = 0;
-	if(mousePositionY != mouseBuffer)
-		delta = mousePositionY > mouseBuffer ? -.5 : .5;
->>>>>>> origin/master
 	camera.position.add(worldProjection.multiplyScalar(delta));
 }
 function rotate() {
@@ -206,13 +200,8 @@ $(document).ready(function() {
 			break;
 	}
 	});
-<<<<<<< HEAD
 	$(document).mouseup(function(e) {
 		switch(e.which){
-=======
-	$("canvas").mouseup(function(e) {
-	switch(e.which){
->>>>>>> origin/master
 		case 1:
 
 			break;
