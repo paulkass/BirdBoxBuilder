@@ -46,21 +46,28 @@ var loadCount = 0;
 //  **********************
 
 function loadPromiseFunction(resolve2, reject2) {
+	var length = OBJECT_SOURCES_ARRAY.length;
+	if (loadCount<length) {	
+		console.log(loadCount);
+		console.log("hi");
 		var name = OBJECT_SOURCES_ARRAY[loadCount].split("\.")[0]
 		console.log(name);
 		objectPrototypeArrayNames[loadCount] = name;
 		var urlString = "src/"+name+".json";
 		objectLoader.load(urlString, function(obj) {
-		objectPrototypeArray[objectPrototypeArrayNames.indexOf(name)] = obj;
-		loadCount++;
-		if (loadCount==length) {
-			reject2();
-			console.log("hi");
-		} else {
-			resolve2();
-		}
-		setLoadingProgressBarValue(loadCount/length);
-	});
+			objectPrototypeArray[objectPrototypeArrayNames.indexOf(name)] = obj;
+			loadCount++;
+			if (loadCount==length) {
+				reject2();
+				console.log("lol");
+			} else {
+				resolve2();
+			}
+			setLoadingProgressBarValue(loadCount/length);
+		});
+	} else {
+		loadCount = 0;
+	}
 }
 
 function prep_func() {
@@ -75,7 +82,6 @@ function prep_func() {
 			promise2.then(y);
 			promise2.catch(x);
 		}
-		var length = OBJECT_SOURCES_ARRAY.length;
 		loadCount = 0;
 		promise2.then(y);
 		promise2.catch(x);
