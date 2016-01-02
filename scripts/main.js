@@ -9,6 +9,7 @@ var MOVEMENT_SPEED = 0.1; // "Units" per render tick
 var RETICLE_RADIUS = 0.001;
 var WORLD_TO_RETICLE_SCALAR = 0.2;
 var WORLD_TO_PLANK_SCALAR = 10;
+var OBJECT_SOURCES_ARRAY = ["tree-05.json"];
 // ---------
 
 var center = [Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2)];
@@ -24,6 +25,7 @@ var moveBackward = false;
 var moveRight = false;
 var moveLeft = false;
 
+var objectPrototypeArray = {};
 
 var placeButtonPressed = false;
 var holdingPlank = false;
@@ -39,7 +41,27 @@ var userReticle;
 
 //  **********************
 
-init();
+function prep_func() {
+	var promise = new Promise(function(resolve, reject) {
+		var count = 0;
+		for (var i=0; i<OBJECT_SOURCES_ARRAY.length; i++) {
+			var name = OBJECT_SOURCES_ARRAY[i].split(".")[0]
+			objectLoader.load("src/"+OBJECT_SOURCES_ARRAY[i], function(obj) {
+				objectPrototypeArray[name] = obj;
+				count++;
+				if (count==OBJECT_SOURCES_ARRAY.length) {
+					resolve();
+				}
+			});
+		}
+	});
+	promise.then(function() {
+		init();
+	});
+	promise.catch(function(e) {
+		console.log(e);
+	});
+}
 
 function init() {
 
@@ -50,11 +72,13 @@ function init() {
 	camera.position.z=5;
 	camera.lookAt(new THREE.Vector3(0,0,0));
 
+	//var canvas = document.getElementById("drawing_canvas");
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
 
-	light = new THREE.HemisphereLight( 0x0099cc, 0x000000, 1 );
+	light = new THREE.DirectionalLight( 0xffffff, 1 );
+	light.position.set(0,0,50);
 	scene.add(light);
 
 	var planeGeometry = new THREE.PlaneGeometry(1000,1000, 1,1);
@@ -78,7 +102,10 @@ function init() {
 	userReticle = new THREE.Mesh(userReticleGeometry, userReticleMaterial);
 	updateCameraReticle();
 	scene.add(userReticle);
+	
+	setUpControlListeners();
 
+	render();
 }
 
 function render() {
@@ -90,7 +117,6 @@ function render() {
 	requestAnimationFrame( render );
 	renderer.render( scene, camera );
 }
-render();
 
 function updateCameraReticle() {
 	var cameraVector = camera.position.clone();
@@ -164,6 +190,67 @@ function rotate() {
 	camera.lookAt(worldVector.add(cameraVector));
 }
 
+function setUpControlListeners() {
+	$("canvas").mousemove(function(e) {
+		mousePositionX = e.pageX;
+		mousePositionY = e.pageY;
+	});
+	$("canvas").mousedown(function(e) {
+	switch(e.which){
+		case 1:
+
+			break;
+		case 2:
+
+			break;
+		case 3:
+			rightButton = true;
+			mouseBuffer = mousePositionY;
+			break;
+	}
+	});
+	$(document).mouseup(function(e) {
+		switch(e.which){
+		case 1:
+
+			break;
+		case 2:
+
+			break;
+		case 3:
+			rightButton = false;
+			mouseBuffer = center[1];
+			break;
+		}
+	});	
+	$(document).keydown(function(e) {
+		assignKeyMovementValues(true, e.key);
+	});
+	
+	$(document).keyup(function(e) {
+		assignKeyMovementValues(false, e.key);
+	});
+	$(document).keypress(function(e) {
+		switch(e.keyCode){
+		case 49:
+			if(!holdingPlank)
+			{
+				addPlank();
+				holdingPlank = true;			
+			}
+			break;
+		case 32:
+			if(holdingPlank)
+			{
+				holdingPlank = false;
+			}
+			break;
+		default:
+			break;
+		}
+	});
+}
+
 function assignCameraPositions(x,y,z) {
 	
 	camera.position.x = camera.position.x+MOVEMENT_SPEED*x;
@@ -230,63 +317,8 @@ function addPlank () {
 }
 
 $(document).ready(function() {
-	$("canvas").mousemove(function(e) {
-		mousePositionX = e.pageX;
-		mousePositionY = e.pageY;
-	});
-	$("canvas").mousedown(function(e) {
-	switch(e.which){
-		case 1:
-
-			break;
-		case 2:
-
-			break;
-		case 3:
-			rightButton = true;
-			mouseBuffer = mousePositionY;
-			break;
-	}
-	});
-	$(document).mouseup(function(e) {
-		switch(e.which){
-		case 1:
-
-			break;
-		case 2:
-
-			break;
-		case 3:
-			rightButton = false;
-			mouseBuffer = center[1];
-			break;
-		}
-	});	
-	$(document).keydown(function(e) {
-		assignKeyMovementValues(true, e.key);
-	});
+	prep_func();
+	//init();
 	
-	$(document).keyup(function(e) {
-		assignKeyMovementValues(false, e.key);
-	});
-	$(document).keypress(function(e) {
-		switch(e.keyCode){
-		case 49:
-			if(!holdingPlank)
-			{
-				addPlank();
-				holdingPlank = true;			
-			}
-			break;
-		case 32:
-			if(holdingPlank)
-			{
-				holdingPlank = false;
-			}
-			break;
-		default:
-			break;
-		}
-	});
 });
 window.oncontextmenu = function() { return false };
