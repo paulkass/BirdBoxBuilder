@@ -18,7 +18,8 @@ var mousePositionX = center[0];
 var mousePositionY = center[1];
 
 var rightButton = false;
-var mouseBuffer = center[1];
+var mouseBufferX = center[0];
+var mouseBufferY = center[1];
 
 var moveForward = false;
 var moveBackward = false;
@@ -176,8 +177,10 @@ function updateCameraReticle() {
 function pan() {
 	var worldProjection = camera.getWorldDirection();
 	worldProjection.projectOnPlane(new THREE.Vector3(0,1,0)).normalize();
-	var delta = (mouseBuffer -mousePositionY)/window.innerWidth;
-	camera.position.add(worldProjection.multiplyScalar(delta));
+	var strafeVector = worldProjection.clone().cross(new THREE.Vector3(0,1,0)).normalize().negate();
+	var deltaX = (mouseBufferX -mousePositionX)/window.innerWidth;
+	var deltaY = (mouseBufferY -mousePositionY)/window.innerHeight;
+	camera.position.add(worldProjection.multiplyScalar(deltaY)).add(strafeVector.multiplyScalar(deltaX));
 }
 function rotate() {
 	const worldVector = camera.getWorldDirection();
@@ -198,32 +201,6 @@ function rotate() {
 
 	if (mousePositionY-center[1]<-controlBox)
 		worldVector.applyAxisAngle(tiltVector, ANGLE_OF_ROTATION);
-	
-	// -------------------------------
-	
-	// Key Pressed -> Camera Lateral Movement
-	// --------------------------------------
-	
-	var worldVector2 = worldVector.clone();
-	var normWorldVector = worldVector2.clone().normalize();
-	var projOntoXZPlane = worldVector2.clone().projectOnPlane(upVector);
-	var lateralVector = projOntoXZPlane.cross(upVector).normalize();
-	
-	if (moveForward) {
-		assignCameraPositions(normWorldVector.x, normWorldVector.y, normWorldVector.z);
-	}
-	
-	if (moveBackward) {
-		assignCameraPositions(-normWorldVector.x, -normWorldVector.y, -normWorldVector.z);
-	}
-	
-	if (moveRight) {
-		assignCameraPositions(lateralVector.x, 0, lateralVector.z);
-	}
-	
-	if (moveLeft) {
-		assignCameraPositions(-lateralVector.x, 0, -lateralVector.z);
-	}
 	
 	// --------------------------------------
 	
@@ -246,7 +223,8 @@ function setUpControlListeners() {
 			break;
 		case 3:
 			rightButton = true;
-			mouseBuffer = mousePositionY;
+			mouseBufferX = mousePositionX;
+			mouseBufferY = mousePositionY;
 			break;
 	}
 	});
@@ -260,7 +238,8 @@ function setUpControlListeners() {
 			break;
 		case 3:
 			rightButton = false;
-			mouseBuffer = center[1];
+			mouseBufferX = center[0];
+			mouseBufferY = center[1];
 			break;
 		}
 	});	
@@ -291,34 +270,8 @@ function setUpControlListeners() {
 		}
 	});
 }
-
-function assignCameraPositions(x,y,z) {
-	
-	camera.position.x = camera.position.x+MOVEMENT_SPEED*x;
-	
-	var potentialCameraY = camera.position.y+MOVEMENT_SPEED*y;
-	var cameraValueY = 0.1;
-	if (potentialCameraY>=0.1) {
-		cameraValueY = potentialCameraY;
-	}
-	camera.position.y = cameraValueY;
-	camera.position.z = camera.position.z+MOVEMENT_SPEED*z;
-}
-
 function assignKeyMovementValues(value, key) {
 	switch (key) {
-			case "w": 
-				moveForward = value;
-			break;
-			case "s":
-				moveBackward = value;
-			break;
-			case "d":
-				moveRight = value;
-			break;
-			case "a":
-				moveLeft = value;
-			break;
 			case "1":
 				treeType = "tree-05";
 				togglePlacementFlag();
