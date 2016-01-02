@@ -9,7 +9,7 @@ var MOVEMENT_SPEED = 0.1; // "Units" per render tick
 var RETICLE_RADIUS = 0.001;
 var WORLD_TO_RETICLE_SCALAR = 0.2;
 var WORLD_TO_PLANK_SCALAR = 10;
-var OBJECT_SOURCES_ARRAY = ["tree-05.json"];
+var OBJECT_SOURCES_ARRAY = ["tree-05.json", "tree-05_2.json"];
 // ---------
 
 var center = [Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2)];
@@ -25,9 +25,11 @@ var moveBackward = false;
 var moveRight = false;
 var moveLeft = false;
 
-var objectPrototypeArray = {};
+var objectPrototypeArray = [];
+var objectPrototypeArrayNames = [];
 
 var placeButtonPressed = false;
+var treeType = "tree-05";
 var holdingPlank = false;
 var planks = [];
 
@@ -39,28 +41,61 @@ var plane
 var grid;
 var userReticle;
 
+var loadCount = 0;
+
 //  **********************
+
+function loadPromiseFunction(resolve2, reject2) {
+		var name = OBJECT_SOURCES_ARRAY[loadCount].split("\.")[0]
+		console.log(name);
+		objectPrototypeArrayNames[loadCount] = name;
+		var urlString = "src/"+name+".json";
+		objectLoader.load(urlString, function(obj) {
+		objectPrototypeArray[objectPrototypeArrayNames.indexOf(name)] = obj;
+		loadCount++;
+		if (loadCount==length) {
+			reject2();
+			console.log("hi");
+		} else {
+			resolve2();
+		}
+		setLoadingProgressBarValue(loadCount/length);
+	});
+}
 
 function prep_func() {
 	var promise = new Promise(function(resolve, reject) {
-		var count = 0;
-		for (var i=0; i<OBJECT_SOURCES_ARRAY.length; i++) {
-			var name = OBJECT_SOURCES_ARRAY[i].split(".")[0]
-			objectLoader.load("src/"+OBJECT_SOURCES_ARRAY[i], function(obj) {
-				objectPrototypeArray[name] = obj;
-				count++;
-				if (count==OBJECT_SOURCES_ARRAY.length) {
-					resolve();
-				}
-			});
+		var promise2 = new Promise(loadPromiseFunction);
+		var x = function() {
+			loadCount = 0;
+			resolve();
 		}
+		var y = function() {
+			promise2 = new Promise(loadPromiseFunction);
+			promise2.then(y);
+			promise2.catch(x);
+		}
+		var length = OBJECT_SOURCES_ARRAY.length;
+		loadCount = 0;
+		promise2.then(y);
+		promise2.catch(x);
 	});
 	promise.then(function() {
+		$("#loading_progressbar").hide();
+		console.log(JSON.stringify(objectPrototypeArrayNames));
 		init();
 	});
 	promise.catch(function(e) {
 		console.log(e);
 	});
+}
+
+function setLoadingProgressBarValue(value) {
+	$("#loading_progressbar").progressbar("value", Math.floor(value*100));
+}
+
+function objectWithNameIndex(name) {
+	return objectPrototypeArrayNames.indexOf(name);
 }
 
 function init() {
@@ -279,21 +314,30 @@ function assignKeyMovementValues(value, key) {
 				moveLeft = value;
 			break;
 			case "1":
-				if (placeButtonPressed) {
-					placeButtonPressed = false;
-				} else {
-					placeButtonPressed = true;
-				}
+				treeType = "tree-05";
+				togglePlacementFlag();
+			break;
+			case "2":
+				treeType = "tree-05_2";
+				togglePlacementFlag();
 			break;
 			case " ":
 				if (placeButtonPressed) {
 					var placementVector = getPlacementSpot();
-					placeTreeAtVector(placementVector);
+					placeTreeAtVector(treeType, placementVector);
 				}
 			break;
 			default:
 				alert(key);
 		}
+}
+
+function togglePlacementFlag() {
+	if (placeButtonPressed) {
+		placeButtonPressed = false;
+	} else {
+		placeButtonPressed = true;
+	}
 }
 
 function getPlacementSpot() {
@@ -317,8 +361,9 @@ function addPlank () {
 }
 
 $(document).ready(function() {
+	$("#loading_progressbar").progressbar({
+		value: 0
+	});
 	prep_func();
-	//init();
-	
 });
 window.oncontextmenu = function() { return false };
