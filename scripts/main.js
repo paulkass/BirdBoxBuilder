@@ -54,7 +54,7 @@ function init() {
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
 
-	light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+	light = new THREE.HemisphereLight( 0x0099cc, 0x000000, 1 );
 	scene.add(light);
 
 	var planeGeometry = new THREE.PlaneGeometry(1000,1000, 1,1);
