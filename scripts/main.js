@@ -28,7 +28,9 @@ var moveLeft = false;
 
 var objectPrototypeArray = [];
 var objectPrototypeArrayNames = [];
-var objects = [];
+var objectIds = [];
+
+var objectIdCount = 1;
 
 var scene;
 var camera;
@@ -273,7 +275,9 @@ function setUpControlListeners() {
 
 function addObjectToScene() {
 	selectedObject = 0;
-	selectedObjectType = 0;
+	objectIds.push(selectedObjectType+""+(objectIdCount-1));
+	console.log(JSON.stringify(objectIds));
+	selectedObjectType = "";
 }
 
 function getPlacementSpot() {
@@ -301,13 +305,19 @@ function addTree (type) {
 
 function addSelectedObject(obj, type) {
 	if (selectedObject != 0) {
-		var currentObject = scene.getObjectByName(selectedObjectType);
+		var currentObject = scene.getObjectByName(selectedObjectType+""+(objectIdCount-1));
 		scene.remove(currentObject);
 	}
 	selectedObject = obj;
-	selectedObject.name = type;
+	selectedObject.name = type+""+getObjectIdCount();
 	scene.add(selectedObject);
 	selectedObjectType = type;
+}
+
+function getObjectIdCount() {
+	var returnCount = objectIdCount;
+	objectIdCount++;
+	return returnCount;
 }
 
 function clearSelectedObject() {
