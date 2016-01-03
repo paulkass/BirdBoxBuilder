@@ -162,7 +162,7 @@ function render() {
 }
 
 function updateSelectedObjectPosition() {
-	switch selectedObjectType {
+	switch (selectedObjectType) {
 		case "plank" :
 			var cameraVector = camera.position.clone();
 			var worldVector = camera.getWorldDirection().clone().normalize();
