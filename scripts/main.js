@@ -88,7 +88,7 @@ function prep_func() {
 		promise2.catch(x);
 	});
 	promise.then(function() {
-		$("#loading_progressbar").hide();
+		$("#splash_screen").hide();
 		console.log(JSON.stringify(objectPrototypeArrayNames));
 		init();
 	});
