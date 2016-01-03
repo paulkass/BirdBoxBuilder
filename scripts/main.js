@@ -31,8 +31,9 @@ var objectPrototypeArrayNames = [];
 
 var placeButtonPressed = false;
 var treeType = "tree-05";
-var holdingPlank = false;
+var holdingPlank, holdingTree = false;
 var planks = [];
+var trees = [];
 
 var scene;
 var camera;
@@ -167,9 +168,16 @@ function updateCameraReticle() {
 	userReticle.position.set(reticlePositionVector.x, reticlePositionVector.y, reticlePositionVector.z)
 	if(holdingPlank)
 	{
-		var plankPos = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
-		planks[planks.length -1].position.set(plankPos.x, plankPos.y, plankPos.z);
+		var heldPos = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
+		planks[planks.length -1].position.set(heldPos.x, heldPos.y, heldPos.z);
 		planks[planks.length -1].lookAt(worldVector.add(cameraVector));
+	}
+	else if (holdingTree)
+	{
+		var treescale = 0.3;
+		var heldPos = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
+		var vector = new THREE.Vector3(heldPos.x +6*treeScale, heldPos.y, heldPos.z -2.5*treescale);
+		trees[trees.length -1].position.set(vector.x, vector.y, vector.z);
 	}
 	
 }
@@ -243,6 +251,7 @@ function setUpControlListeners() {
 			break;
 		}
 	});	
+/*
 	$(document).keydown(function(e) {
 		assignKeyMovementValues(true, e.keyCode);
 	});
@@ -250,18 +259,34 @@ function setUpControlListeners() {
 	$(document).keyup(function(e) {
 		assignKeyMovementValues(false, e.keyCode);
 	});
+*/
 	$(document).keypress(function(e) {
 		switch(e.keyCode){
+		case 113:
+			if(!(holdingTree || holdingPlank))
+			{
+				addTree("tree-05");
+				holdingTree = true;			
+			}
+			break;
+		case 119:
+			if(!(holdingTree || holdingPlank))
+			{
+				addTree("tree-05_2");
+				holdingTree = true;			
+			}
+			break;
 		case 49:
-			if(!holdingPlank)
+			if(!(holdingTree || holdingPlank))
 			{
 				addPlank();
 				holdingPlank = true;			
 			}
 			break;
 		case 32:
-			if(holdingPlank)
+			if(holdingTree || holdingPlank)
 			{
+				holdingTree = false;
 				holdingPlank = false;
 			}
 			break;
@@ -270,12 +295,9 @@ function setUpControlListeners() {
 		}
 	});
 }
+/*
 function assignKeyMovementValues(value, key) {
 	switch (key) {
-			case 49:
-				treeType = "tree-05";
-				togglePlacementFlag();
-			break;
 			case 50:
 				treeType = "tree-05_2";
 				togglePlacementFlag();
@@ -287,7 +309,7 @@ function assignKeyMovementValues(value, key) {
 				}
 			break;
 			default:
-				alert(key);
+//				alert(key);
 		}
 }
 
@@ -298,7 +320,7 @@ function togglePlacementFlag() {
 		placeButtonPressed = true;
 	}
 }
-
+*/
 function getPlacementSpot() {
 	var ray = new THREE.Ray(new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z), camera.getWorldDirection());
 	var placementVector = new THREE.Vector3(0,0,0);
@@ -311,12 +333,19 @@ function getPlacementSpot() {
 }
 
 function addPlank () {
-	var worldVector = camera.getWorldDirection().clone().projectOnPlane(new THREE.Vector3(0,1,0)).normalize();
 	var plankMaterial = new THREE.MeshLambertMaterial({color: 0x804000, fog: true});
 	var plankGeometry = new THREE.BoxGeometry(1, 1, 1);
 	var plank = new THREE.Mesh(plankGeometry, plankMaterial);
 	scene.add(plank);
 	planks.push(plank);
+}
+
+function addTree (type) {
+	var objectLoader = new THREE.ObjectLoader();
+	var tree = objectPrototypeArray[objectWithNameIndex(type)].clone();
+	tree.scale.set(0.3,0.3,0.3);
+	scene.add(tree);
+	trees.push(tree);
 }
 
 $(document).ready(function() {

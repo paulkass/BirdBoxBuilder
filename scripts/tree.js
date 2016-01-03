@@ -12,6 +12,7 @@ function placeTreeAtVector(type, vector) {
 	tree = getObjectWithPositionVector(tree, vector);
 	tree.scale.set(treeScale, treeScale, treeScale);
 	scene.add(tree);
+	trees.push(tree);
 }
 
 function getObjectWithPositionVector(object, vector) {
