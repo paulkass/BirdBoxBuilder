@@ -162,17 +162,20 @@ function render() {
 }
 
 function updateSelectedObjectPosition() {
-	if (selectedObjectType == "plank") {
-		var cameraVector = camera.position.clone();
-		var worldVector = camera.getWorldDirection().clone().normalize();
-		var heldPos = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
-		selectedObject.position.set(heldPos.x, heldPos.y, heldPos.z);
-		selectedObject.lookAt(worldVector.add(cameraVector));
-	} else if (selectedObjectType == "tree") {
-		var placementVector = getPlacementSpot();
-		selectedObject = placeTreeAtVector(selectedObject, placementVector);
-	} else {
-	
+	switch selectedObjectType {
+		case "plank" :
+			var cameraVector = camera.position.clone();
+			var worldVector = camera.getWorldDirection().clone().normalize();
+			var heldPos = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
+			selectedObject.position.set(heldPos.x, heldPos.y, heldPos.z);
+			selectedObject.lookAt(worldVector.add(cameraVector));
+			break;
+		case "tree":
+			var placementVector = getPlacementSpot();
+			selectedObject = placeTreeAtVector(selectedObject, placementVector);
+			break;
+		default:
+			// do nothing for now
 	}
 }
 
