@@ -323,6 +323,8 @@ $(document).ready(function() {
 	$("#loading_progressbar").progressbar({
 		value: 0
 	});
+	$("#loading_progressbar").css({ 'background': 'LightGreen' });
+    $("#loading_progressbar > div").css({ 'background': 'LightBlue' });
 	prep_func();
 });
 window.oncontextmenu = function() { return false };
