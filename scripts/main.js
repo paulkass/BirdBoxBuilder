@@ -41,7 +41,13 @@ var grid;
 var userReticle;
 
 var selectedObject = 0; // the value is 0 if not used.
+var selectedObjectMaterial = 0;
 var selectedObjectType = ""; // empty string when there is no object to be used
+
+var wireframeMaterial = material = new THREE.MeshBasicMaterial({
+    color: 0xff0000,
+    wireframe: true
+});
 
 var loadCount = 0;
 
@@ -277,10 +283,12 @@ function setUpControlListeners() {
 }
 
 function addObjectToScene() {
-	selectedObject = 0;
+	if (selectedObjectType=="plank") {
+		selectedObject.material = selectedObjectOriginalMaterial;
+	}
+	clearSelectedObject();
 	objectIds.push(selectedObjectType+""+(objectIdCount-1));
 	console.log(JSON.stringify(objectIds));
-	selectedObjectType = "";
 }
 
 function getPlacementSpot() {
@@ -310,9 +318,14 @@ function addSelectedObject(obj, type) {
 	if (selectedObject != 0) {
 		var currentObject = scene.getObjectByName(selectedObjectType+""+(objectIdCount-1));
 		scene.remove(currentObject);
+		clearSelectedObject();
 	}
 	selectedObject = obj;
 	selectedObject.name = type+""+getObjectIdCount();
+	if (type=="plank") {
+		selectedObjectOriginalMaterial = selectedObject.material;
+		selectedObject.material = wireframeMaterial;
+	}
 	scene.add(selectedObject);
 	selectedObjectType = type;
 }
@@ -325,6 +338,7 @@ function getObjectIdCount() {
 
 function clearSelectedObject() {
 	selectedObject = 0;
+	selectedObjectOriginalMaterial = 0;
 	selectedObjectType = "";
 }
 
