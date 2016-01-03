@@ -9,7 +9,7 @@ var MOVEMENT_SPEED = 0.1; // "Units" per render tick
 var RETICLE_RADIUS = 0.001;
 var WORLD_TO_RETICLE_SCALAR = 0.2;
 var WORLD_TO_PLANK_SCALAR = 10;
-var OBJECT_SOURCES_ARRAY = ["tree-05.json", "tree-05_2.json"];
+var OBJECT_SOURCES_ARRAY = ["tree-05.json", "tree-05_2.json", "house.json"];
 // ---------
 
 var center = [Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2)];
