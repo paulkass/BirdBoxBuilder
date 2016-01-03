@@ -31,9 +31,8 @@ var objectPrototypeArrayNames = [];
 
 var placeButtonPressed = false;
 var treeType = "tree-05";
-var holdingPlank, holdingTree = false;
-var planks = [];
-var trees = [];
+//var holdingPlank, holdingTree = false;
+var objects = [];
 
 var scene;
 var camera;
@@ -42,6 +41,9 @@ var light;
 var plane;
 var grid;
 var userReticle;
+
+var selectedObject = 0; // the value is 0 if not used.
+var selectedObjectType = ""; // empty string when there is no object to be used
 
 var loadCount = 0;
 
@@ -157,8 +159,24 @@ function render() {
 	}
 	rotate();	
 	updateCameraReticle();
+	updateSelectedObjectPosition();
 	requestAnimationFrame( render );
 	renderer.render( scene, camera );
+}
+
+function updateSelectedObjectPosition() {
+	if (selectedObjectType == "plank") {
+		var cameraVector = camera.position.clone();
+		var worldVector = camera.getWorldDirection().clone().normalize();
+		var heldPos = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
+		selectedObject.position.set(heldPos.x, heldPos.y, heldPos.z);
+		selectedObject.lookAt(worldVector.add(cameraVector));
+	} else if (selectedObjectType == "tree") {
+		var placementVector = getPlacementSpot();
+		selectedObject = placeTreeAtVector(selectedObject, placementVector);
+	} else {
+	
+	}
 }
 
 function updateCameraReticle() {
@@ -166,19 +184,19 @@ function updateCameraReticle() {
 	var worldVector = camera.getWorldDirection().clone().normalize();
 	var reticlePositionVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_RETICLE_SCALAR));
 	userReticle.position.set(reticlePositionVector.x, reticlePositionVector.y, reticlePositionVector.z)
-	if(holdingPlank)
-	{
-		var heldPos = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
-		planks[planks.length -1].position.set(heldPos.x, heldPos.y, heldPos.z);
-		planks[planks.length -1].lookAt(worldVector.add(cameraVector));
-	}
-	else if (holdingTree)
-	{
-		var treescale = 0.3;
-		var heldPos = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
-		var vector = new THREE.Vector3(heldPos.x +6*treeScale, heldPos.y, heldPos.z -2.5*treescale);
-		trees[trees.length -1].position.set(vector.x, vector.y, vector.z);
-	}
+	// if(holdingPlank)
+// 	{
+// 		var heldPos = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
+// 		planks[planks.length -1].position.set(heldPos.x, heldPos.y, heldPos.z);
+// 		planks[planks.length -1].lookAt(worldVector.add(cameraVector));
+// 	}
+// 	else if (holdingTree)
+// 	{
+// 		var treescale = 0.3;
+// 		var heldPos = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
+// 		var vector = new THREE.Vector3(heldPos.x +6*treeScale, heldPos.y, heldPos.z -2.5*treescale);
+// 		trees[trees.length -1].position.set(vector.x, vector.y, vector.z);
+// 	}
 	
 }
 
@@ -262,38 +280,27 @@ function setUpControlListeners() {
 */
 	$(document).keypress(function(e) {
 		switch(e.keyCode){
-		case 113:
-			if(!(holdingTree || holdingPlank))
-			{
+		case 113: // Q key
 				addTree("tree-05");
-				holdingTree = true;			
-			}
 			break;
-		case 119:
-			if(!(holdingTree || holdingPlank))
-			{
+		case 119: // W
 				addTree("tree-05_2");
 				holdingTree = true;			
-			}
 			break;
-		case 49:
-			if(!(holdingTree || holdingPlank))
-			{
+		case 49: // 1
 				addPlank();
-				holdingPlank = true;			
-			}
 			break;
-		case 32:
-			if(holdingTree || holdingPlank)
-			{
-				holdingTree = false;
-				holdingPlank = false;
-			}
-			break;
+		case 32: // Space
+			addObjectToScene();
 		default:
 			break;
 		}
 	});
+}
+
+function addObjectToScene() {
+	selectedObject = 0;
+	selectedObjectType = 0;
 }
 /*
 function assignKeyMovementValues(value, key) {
@@ -336,16 +343,29 @@ function addPlank () {
 	var plankMaterial = new THREE.MeshLambertMaterial({color: 0x804000, fog: true});
 	var plankGeometry = new THREE.BoxGeometry(1, 1, 1);
 	var plank = new THREE.Mesh(plankGeometry, plankMaterial);
-	scene.add(plank);
-	planks.push(plank);
+	//scene.add(plank);
+	addSelectedObject(plank, "plank");
 }
 
 function addTree (type) {
-	var objectLoader = new THREE.ObjectLoader();
-	var tree = objectPrototypeArray[objectWithNameIndex(type)].clone();
-	tree.scale.set(0.3,0.3,0.3);
-	scene.add(tree);
-	trees.push(tree);
+	var tree = getTree(type);
+	addSelectedObject(tree, "tree");
+}
+
+function addSelectedObject(obj, type) {
+	if (selectedObject != 0) {
+		var currentObject = scene.getObjectByName(selectedObjectType);
+		scene.remove(currentObject);
+	}
+	selectedObject = obj;
+	selectedObject.name = type;
+	scene.add(selectedObject);
+	selectedObjectType = type;
+}
+
+function clearSelectedObject() {
+	selectedObject = 0;
+	selectedObjectType = "";
 }
 
 $(document).ready(function() {
