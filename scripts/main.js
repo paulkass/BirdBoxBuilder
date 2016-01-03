@@ -38,7 +38,7 @@ var scene;
 var camera;
 var renderer;
 var light;
-var plane
+var plane;
 var grid;
 var userReticle;
 
@@ -244,11 +244,11 @@ function setUpControlListeners() {
 		}
 	});	
 	$(document).keydown(function(e) {
-		assignKeyMovementValues(true, e.key);
+		assignKeyMovementValues(true, e.keyCode);
 	});
 	
 	$(document).keyup(function(e) {
-		assignKeyMovementValues(false, e.key);
+		assignKeyMovementValues(false, e.keyCode);
 	});
 	$(document).keypress(function(e) {
 		switch(e.keyCode){
@@ -272,15 +272,15 @@ function setUpControlListeners() {
 }
 function assignKeyMovementValues(value, key) {
 	switch (key) {
-			case "1":
+			case 49:
 				treeType = "tree-05";
 				togglePlacementFlag();
 			break;
-			case "2":
+			case 50:
 				treeType = "tree-05_2";
 				togglePlacementFlag();
 			break;
-			case " ":
+			case 32:
 				if (placeButtonPressed) {
 					var placementVector = getPlacementSpot();
 					placeTreeAtVector(treeType, placementVector);
