@@ -39,6 +39,7 @@ function getClickFunctionForName(name) {
 function populateObjectsMenu() {
 	var objectCount = 0;
 	var mainDiv = document.getElementById("tab1");
+	mainDiv.appendChild(document.createElement("BR"));
 	TYPES.forEach(function (type) {
 		var objectArray = objectPrototypeArrayNames.filter(function (v) {
 			return v.startsWith(type);
@@ -51,8 +52,6 @@ function populateObjectsMenu() {
 				objectDiv.onclick = function () { var x = getClickFunctionForName(name); };
 				objectDiv.appendChild(document.createTextNode(name+"\t"));
 				mainDiv.appendChild(objectDiv);
-				
-				//$("#"+name).click(getClickFunctionForName(name));
 			});
 		} else {
 			var objectDiv = document.createElement("SPAN");
@@ -60,7 +59,6 @@ function populateObjectsMenu() {
 			objectDiv.appendChild(document.createTextNode(type+"\t"));
 			objectDiv.onclick = function () { var x = getClickFunctionForName(type); };
 			mainDiv.appendChild(objectDiv);
-			//$("#"+type).click(getClickFunctionForName(type));
 		}
 	});
 }
