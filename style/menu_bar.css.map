@@ -1,7 +1,7 @@
 {
 "version": 3,
-"mappings": "AAIA,SAAU;EACT,UAAU,EAJQ,IAAI;EAKtB,OAAO,EANC,GAAG;EAOX,KAAK,EALO,IAAI;EAMhB,MAAM,EARE,GAAG",
-"sources": ["menu_bar.scss"],
+"mappings": "AAMA,SAAU;EACT,UAAU,EANQ,IAAI;EAOtB,OAAO,EARC,GAAG;EASX,KAAK,EAPO,IAAI;EAQhB,MAAM,EAVE,GAAG;ECEX,qBAAqB,EDSE,IAAI;ECR3B,kBAAkB,EDQK,IAAI;ECP3B,aAAa,EDOU,IAAI",
+"sources": ["menu_bar.scss","mixins.scss"],
 "names": [],
 "file": "menu_bar.css"
 }

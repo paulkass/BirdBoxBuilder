@@ -2,6 +2,9 @@
   background: #000;
   padding: 2px;
   color: #fff;
-  margin: 2px; }
+  margin: 2px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px; }
 
 /*# sourceMappingURL=menu_bar.css.map */

@@ -1,9 +1,13 @@
-$margin: 2px;
+$margin: 15px;
 $background_color: #000;
 $text_color: #fff;
+
+@import 'mixins';
 
 #menu_bar {
 	background: $background_color; 
 	padding: $margin; 
 	color: $text_color ; 
-	margin: $margin; }
+	margin: $margin; 
+	@include border-radius(10px);
+}
