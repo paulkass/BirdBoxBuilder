@@ -1,4 +1,2 @@
 
-$(document).ready({
-
-});
+$("#menu_bar").tabs();

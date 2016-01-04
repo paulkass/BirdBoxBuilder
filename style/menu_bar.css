@@ -1,10 +1,13 @@
 #menu_bar {
   background: #000;
-  padding: 2px;
-  color: #fff;
-  margin: 2px;
+  padding: 0px;
+  margin: 0px;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
-  border-radius: 10px; }
+  border-radius: 10px;
+  font-family: 'Dancing Script', cursive; }
+  #menu_bar div {
+    font-family: 'Dancing Script', cursive;
+    color: #fff; }
 
 /*# sourceMappingURL=menu_bar.css.map */

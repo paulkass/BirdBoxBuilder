@@ -1,4 +1,4 @@
-$margin: 15px;
+$margin: 0px;
 $background_color: #000;
 $text_color: #fff;
 
@@ -7,7 +7,11 @@ $text_color: #fff;
 #menu_bar {
 	background: $background_color; 
 	padding: $margin; 
-	color: $text_color ; 
 	margin: $margin; 
 	@include border-radius(10px);
+	font-family: 'Dancing Script', cursive;
+	div {
+		font-family: 'Dancing Script', cursive;
+		color: $text_color;
+	}
 }
