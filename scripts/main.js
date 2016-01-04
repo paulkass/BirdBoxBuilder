@@ -9,7 +9,8 @@ var MOVEMENT_SPEED = 0.1; // "Units" per render tick
 var RETICLE_RADIUS = 0.001;
 var WORLD_TO_RETICLE_SCALAR = 0.2;
 var WORLD_TO_PLANK_SCALAR = 10;
-var OBJECT_SOURCES_ARRAY = ["tree-05.json", "tree-05_2.json", "house.json"];
+var OBJECT_SOURCES_ARRAY = ["tree1.json", "tree2.json", "house.json"];
+var TYPES = ["tree", "plank", "house"];
 // ---------
 
 var center = [Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2)];
@@ -93,6 +94,7 @@ function prep_func() {
 		$("#splash_screen").hide();
 		console.log(JSON.stringify(objectPrototypeArrayNames));
 		init();
+		populateObjectsMenu();
 	});
 	promise.catch(function(e) {
 		console.log(e);
@@ -256,28 +258,6 @@ function setUpControlListeners() {
 			break;
 		}
 	});	
-
-	$(document).keypress(function(e) {
-		switch(e.keyCode){
-		case 113: // Q key
-				addTree("tree-05");
-			break;
-		case 119: // W
-				addTree("tree-05_2");		
-			break;
-		case 102: // F
-			toggleMenuBar();
-			break;
-		case 49: // 1
-				addPlank();
-			break;
-		case 32: // Space
-			addObjectToScene();
-		default:
-			//alert(e.keyCode);
-			break;
-		}
-	});
 }
 
 function addObjectToScene() {
