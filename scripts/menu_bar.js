@@ -49,14 +49,16 @@ function populateObjectsMenu() {
 			objectArray.forEach(function (name) {
 				var objectDiv = document.createElement("SPAN");
 				objectDiv.setAttribute("id", name);
+				objectDiv.setAttribute("class", "btn btn-success");
 				objectDiv.onclick = function () { var x = getClickFunctionForName(name); };
-				objectDiv.appendChild(document.createTextNode(name+"\t"));
+				objectDiv.appendChild(document.createTextNode(name));
 				mainDiv.appendChild(objectDiv);
 			});
 		} else {
 			var objectDiv = document.createElement("SPAN");
 			objectDiv.setAttribute("id", type);
-			objectDiv.appendChild(document.createTextNode(type+"\t"));
+			objectDiv.setAttribute("class", "btn btn-success");
+			objectDiv.appendChild(document.createTextNode(type));
 			objectDiv.onclick = function () { var x = getClickFunctionForName(type); };
 			mainDiv.appendChild(objectDiv);
 		}
