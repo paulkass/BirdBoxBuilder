@@ -5,7 +5,9 @@
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   border-radius: 10px;
-  font-family: 'Dancing Script', cursive; }
+  font-family: 'Dancing Script', cursive;
+  position: absolute;
+  top: 0px; }
   #menu_bar div {
     font-family: 'Dancing Script', cursive;
     color: #fff; }

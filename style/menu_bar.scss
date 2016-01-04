@@ -10,8 +10,12 @@ $text_color: #fff;
 	margin: $margin; 
 	@include border-radius(10px);
 	font-family: 'Dancing Script', cursive;
+	position: absolute;
+	top: 0px;
+	
 	div {
 		font-family: 'Dancing Script', cursive;
 		color: $text_color;
 	}
+	
 }
