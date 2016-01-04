@@ -4,3 +4,19 @@
 	-moz-border-radius: $radius;
 	border-radius: $radius;
 }
+
+@mixin border-bottom-radius($radius) {
+	-webkit-border-bottom-left-radius: $radius;
+	-moz-border-bottom-left-radius: $radius;
+	border-bottom-left-radius: $radius;
+	-webkit-border-bottom-right-radius: $radius;
+	-moz-border-bottom-right-radius: $radius;
+	border-bottom-right-radius: $radius;
+	
+	-webkit-border-top-left-radius: 0px;
+	-moz-border-top-left-radius: 0px;
+	border-top-left-radius: 0px;
+	-webkit-border-top-right-radius: 0px;
+	-moz-border-top-right-radius: 0px;
+	border-top-right-radius: 0px;
+}

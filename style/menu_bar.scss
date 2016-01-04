@@ -8,11 +8,11 @@ $text_color: #fff;
 	background: $background_color; 
 	padding: $margin; 
 	margin: $margin; 
-	@include border-radius(10px);
+	@include border-bottom-radius(10px);
 	font-family: 'Dancing Script', cursive;
 	position: absolute;
 	top: 0px;
-	
+	float: center;
 	div {
 		font-family: 'Dancing Script', cursive;
 		color: #000;
