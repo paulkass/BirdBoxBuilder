@@ -21,11 +21,6 @@ var rightButton = false;
 var mouseBufferX = center[0];
 var mouseBufferY = center[1];
 
-var moveForward = false;
-var moveBackward = false;
-var moveRight = false;
-var moveLeft = false;
-
 var objectPrototypeArray = [];
 var objectPrototypeArrayNames = [];
 var objectIds = [];
