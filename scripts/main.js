@@ -122,8 +122,7 @@ function init() {
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
 
-	light = new THREE.DirectionalLight( 0xffffff, 1 );
-	light.position.set(0,0,50);
+	var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 	scene.add(light);
 
 	var planeGeometry = new THREE.PlaneGeometry(1000,1000, 1,1);
@@ -132,6 +131,12 @@ function init() {
 	plane = new THREE.Mesh(planeGeometry, planeMaterial);
 	plane.position.y=-0.5;
 	scene.add(plane);
+	
+	var geometry = new THREE.SphereGeometry( 100, 32, 32 );
+	var material = new THREE.MeshBasicMaterial( {color: 0x33ccff} );
+	material.side = THREE.DoubleSide;
+	var sphere = new THREE.Mesh( geometry, material );
+	scene.add( sphere );
 
 	grid = new THREE.GridHelper( 200, 10 );
 	grid.setColors( 0x000000, 0x000000 );
