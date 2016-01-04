@@ -47,22 +47,21 @@ function populateObjectsMenu() {
 		
 		if (objectArray.length>0) {
 			objectArray.forEach(function (name) {
-				var objectDiv = document.createElement("SPAN");
-				objectDiv.setAttribute("id", name);
-				objectDiv.setAttribute("class", "btn btn-success");
-				objectDiv.onclick = function () { var x = getClickFunctionForName(name); };
-				objectDiv.appendChild(document.createTextNode(name));
-				mainDiv.appendChild(objectDiv);
+				addSpanToElement(mainDiv, name);
 			});
 		} else {
-			var objectDiv = document.createElement("SPAN");
-			objectDiv.setAttribute("id", type);
-			objectDiv.setAttribute("class", "btn btn-success");
-			objectDiv.appendChild(document.createTextNode(type));
-			objectDiv.onclick = function () { var x = getClickFunctionForName(type); };
-			mainDiv.appendChild(objectDiv);
+			addSpanToElement(mainDiv, type);
 		}
 	});
+}
+
+function addSpanToElement(parent, childName) {
+	var objectDiv = document.createElement("SPAN");
+	objectDiv.setAttribute("id", childName);
+	objectDiv.setAttribute("class", "btn btn-success");
+	objectDiv.onclick = function () { var x = getClickFunctionForName(childName); };
+	objectDiv.appendChild(document.createTextNode(childName));
+	mainDiv.appendChild(objectDiv);
 }
 
 function menuBarRendering() {
