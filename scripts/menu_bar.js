@@ -61,7 +61,7 @@ function addSpanToElement(parent, childName) {
 	objectDiv.setAttribute("class", "btn btn-success");
 	objectDiv.onclick = function () { var x = getClickFunctionForName(childName); };
 	objectDiv.appendChild(document.createTextNode(childName));
-	mainDiv.appendChild(objectDiv);
+	parent.appendChild(objectDiv);
 }
 
 function menuBarRendering() {
