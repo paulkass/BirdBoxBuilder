@@ -263,8 +263,7 @@ function setUpControlListeners() {
 				addTree("tree-05");
 			break;
 		case 119: // W
-				addTree("tree-05_2");
-				holdingTree = true;			
+				addTree("tree-05_2");		
 			break;
 		case 49: // 1
 				addPlank();
