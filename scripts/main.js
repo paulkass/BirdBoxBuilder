@@ -261,14 +261,14 @@ function setUpControlListeners() {
 
 	$(document).keypress(function(e) {
 		switch(e.keyCode){
-		case 102: // F
-			toggleMenuBar();
-			break;
-		case 32: // Space
-			addObjectToScene();
-		default:
-			//alert(e.keyCode);
-			break;
+			case 102: // F
+				toggleMenuBar();
+				break;
+			case 32: // Space
+				addObjectToScene();
+				break;
+			default:
+				//alert(e.keyCode);
 		}
 	});
 }
