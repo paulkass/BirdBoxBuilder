@@ -49,7 +49,7 @@ function populateObjectsMenu() {
 				var objectDiv = document.createElement("SPAN");
 				objectDiv.setAttribute("id", name);
 				objectDiv.onclick = function () { var x = getClickFunctionForName(name); };
-				objectDiv.appendChild(document.createTextNode(name));
+				objectDiv.appendChild(document.createTextNode(name+"\t"));
 				mainDiv.appendChild(objectDiv);
 				
 				//$("#"+name).click(getClickFunctionForName(name));
@@ -57,7 +57,7 @@ function populateObjectsMenu() {
 		} else {
 			var objectDiv = document.createElement("SPAN");
 			objectDiv.setAttribute("id", type);
-			objectDiv.appendChild(document.createTextNode(type));
+			objectDiv.appendChild(document.createTextNode(type+"\t"));
 			objectDiv.onclick = function () { var x = getClickFunctionForName(type); };
 			mainDiv.appendChild(objectDiv);
 			//$("#"+type).click(getClickFunctionForName(type));

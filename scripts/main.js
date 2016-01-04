@@ -258,6 +258,19 @@ function setUpControlListeners() {
 			break;
 		}
 	});	
+
+	$(document).keypress(function(e) {
+		switch(e.keyCode){
+		case 102: // F
+			toggleMenuBar();
+			break;
+		case 32: // Space
+			addObjectToScene();
+		default:
+			//alert(e.keyCode);
+			break;
+		}
+	});
 }
 
 function addObjectToScene() {
