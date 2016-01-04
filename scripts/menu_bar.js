@@ -1,9 +1,15 @@
 
-$("#menu_bar").tabs();
+$("#menu_bar").tabs({
+	collapsible: true
+});
 $("#menu_bar").hide();
+$("#menu_bar").css({
+	"width": 0.9*window.innerWidth
+});
 
 function toggleMenuBar() {
 	$("#menu_bar").toggle({
-		effect: 'puff'
+		effect: 'puff',
+		easing: 'easeInOutSine'
 	});
 }

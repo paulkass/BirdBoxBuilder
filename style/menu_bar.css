@@ -1,5 +1,5 @@
 #menu_bar {
-  background: #000;
+  background: #6cf;
   padding: 0px;
   margin: 0px;
   -webkit-border-radius: 10px;
@@ -10,6 +10,6 @@
   top: 0px; }
   #menu_bar div {
     font-family: 'Dancing Script', cursive;
-    color: #fff; }
+    color: #000; }
 
 /*# sourceMappingURL=menu_bar.css.map */

@@ -266,7 +266,6 @@ function setUpControlListeners() {
 				addTree("tree-05_2");		
 			break;
 		case 102: // F
-			console.log("F was pressed");
 			toggleMenuBar();
 			break;
 		case 49: // 1
