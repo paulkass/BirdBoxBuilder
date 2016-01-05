@@ -236,7 +236,7 @@ function setUpControlListeners() {
 	$("canvas").mousedown(function(e) {
 	switch(e.which){
 		case 1:
-
+			addObjectToScene();
 			break;
 		case 2:
 
@@ -251,7 +251,6 @@ function setUpControlListeners() {
 	$(document).mouseup(function(e) {
 		switch(e.which){
 		case 1:
-
 			break;
 		case 2:
 
@@ -270,7 +269,7 @@ function setUpControlListeners() {
 				toggleMenuBar();
 				break;
 			case 32: // Space
-				addObjectToScene();
+
 				break;
 			default:
 				//alert(e.keyCode);
