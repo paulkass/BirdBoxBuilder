@@ -28,6 +28,8 @@ var objectIds = [];
 
 var objectIdCount = 1;
 
+var controls;
+
 var scene;
 var camera;
 var renderer;
@@ -121,6 +123,10 @@ function init() {
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
+	
+	controls = new THREE.OrbitControls( camera, renderer.domElement );
+	controls.enableDamping = false;
+	controls.enableZoom = true;
 
 	var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 	scene.add(light);
@@ -159,10 +165,11 @@ function init() {
 }
 
 function render() {
-	if(rightButton) {
-		pan();
-	}
-	rotate();	
+	// if(rightButton) {
+// 		pan();
+// 	}
+// 	rotate();	
+	controls.update();
 	updateCameraReticle();
 	updateSelectedObjectPosition();
 	requestAnimationFrame( render );
