@@ -59,7 +59,6 @@ function loadPromiseFunction(resolve2, reject2) {
 	var length = OBJECT_SOURCES_ARRAY.length;
 	if (loadCount<length) {	
 		console.log(loadCount);
-		console.log("hi");
 		var name = OBJECT_SOURCES_ARRAY[loadCount].split("\.")[0]
 		console.log(name);
 		objectPrototypeArrayNames[loadCount] = name;
