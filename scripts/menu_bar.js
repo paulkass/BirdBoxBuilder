@@ -16,8 +16,8 @@ $("#menu_bar").hide();
 $("#menu_bar").css({
 	"right": horizontalMarginFactor*window.innerWidth,
 	"left": horizontalMarginFactor*window.innerWidth,
-	"width": tabsWidth,
-	"height": menuHeight
+	"width": tabsWidth
+	// "height": menuHeight
 });
 
 function enableSelectedObjectMenu() {
