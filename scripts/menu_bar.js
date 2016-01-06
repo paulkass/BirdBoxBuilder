@@ -1,5 +1,5 @@
 var horizontalMarginFactor = 0.1;
-var heightFactor = 0.3;
+var heightFactor = 0.5;
 var menuHeight = heightFactor*window.innerHeight;
 
 var tabsWidth = (1-2*horizontalMarginFactor)*window.innerWidth;
@@ -22,10 +22,12 @@ $("#menu_bar").css({
 
 function enableSelectedObjectMenu() {
 	$("#menu_bar").tabs("enable", 1);
+	$("#tab2 > button").attr("disabled", false);
 }
 
 function disableSelectedObjectMenu() {
 	$("#menu_bar").tabs("disable", 1);
+	$("#tab2 > button").attr("disabled", true);
 }
 
 function getClickFunctionForName(name) {
@@ -54,7 +56,6 @@ function getClickFunctionForName(name) {
 function populateObjectsMenu() {
 	var objectCount = 0;
 	var mainDiv = document.getElementById("tab1");
-	mainDiv.appendChild(document.createElement("BR"));
 	TYPES.forEach(function (type) {
 		var objectArray = objectPrototypeArrayNames.filter(function (v) {
 			return v.startsWith(type);
@@ -62,24 +63,25 @@ function populateObjectsMenu() {
 		
 		if (objectArray.length>0) {
 			objectArray.forEach(function (name) {
-				addSpanToElement(mainDiv, name);
+				addButtonToElement(mainDiv, name);
 			});
 		} else {
-			addSpanToElement(mainDiv, type);
+			addButtonToElement(mainDiv, type);
 		}
 	});
 	
 	var selectedObjectDiv = document.getElementById("tab2");
-	addSpanToElement(selectedObjectDiv, "place");
+	addButtonToElement(selectedObjectDiv, "place");
 	
 }
 
-function addSpanToElement(parent, childName) {
-	var objectDiv = document.createElement("SPAN");
+function addButtonToElement(parent, childName) {
+	var objectDiv = document.createElement("BUTTON");
 	objectDiv.setAttribute("id", childName);
 	objectDiv.setAttribute("class", "btn btn-success");
 	objectDiv.onclick = function () { var x = getClickFunctionForName(childName); };
 	objectDiv.appendChild(document.createTextNode(childName));
+	objectDiv.setAttribute("style", "font-family: 'Dancing Script', cursive;");
 	parent.appendChild(objectDiv);
 }
 
