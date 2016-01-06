@@ -18,6 +18,11 @@ var controlBox = Math.floor(Math.min(window.innerWidth, window.innerHeight)/4);
 var mousePositionX = center[0];
 var mousePositionY = center[1];
 
+var grassPlanePower = 3;
+var grassPlaneSize = 5*Math.pow(2, grassPlanePower);
+var grassPlaneExtension = 300;
+var grassMeshArray = [];
+
 var rightButton = false;
 var mouseBufferX = center[0];
 var mouseBufferY = center[1];
@@ -68,15 +73,41 @@ function loadPromiseFunction(resolve2, reject2) {
 			loadCount++;
 			if (loadCount==length) {
 				reject2();
-				console.log("lol");
 			} else {
 				resolve2();
 			}
-			setLoadingProgressBarValue(loadCount/length);
+			setLoadingProgressBarValue(0.75*loadCount/length);
 		});
 	} else {
 		loadCount = 0;
 	}
+}
+
+function loadGrassMeshes(resolve, reject) {
+	var planeGeometry = new THREE.PlaneBufferGeometry( grassPlaneSize, grassPlaneSize );
+
+	var planeTexture = new THREE.CanvasTexture(generateTexture());
+
+	for ( var i = 0; i < 15; i ++ ) {
+
+		var material = new THREE.MeshLambertMaterial( {
+			color: new THREE.Color().setHSL( 0.3, 0.75, ( i /15 ) * 0.4 + 0.1 ),
+			map: planeTexture,
+			depthTest: false,
+			depthWrite: false,
+			transparent: true
+		} );
+
+		var mesh = new THREE.Mesh( planeGeometry, material );
+
+		mesh.position.y = i * 0.01;
+		mesh.rotation.x = - Math.PI / 2;
+
+		grassMeshArray.push(mesh);
+		setLoadingProgressBarValue(0.75+0.25*i/15);
+		console.log("Pushed a mesh. It's number is "+i);
+	}
+	resolve();
 }
 
 function prep_func() {
@@ -84,7 +115,14 @@ function prep_func() {
 		var promise2 = new Promise(loadPromiseFunction);
 		var x = function() {
 			loadCount = 0;
-			resolve();
+			var meshPromiseLoad = new Promise(loadGrassMeshes);
+			meshPromiseLoad.then(function() {
+				console.log("Done loading meshes.");
+				resolve();
+			});
+			meshPromiseLoad.catch(function (e) {
+				console.log(JSON.stringify(e));
+			});
 		}
 		var y = function() {
 			promise2 = new Promise(loadPromiseFunction);
@@ -136,6 +174,8 @@ function init() {
 	camera.lookAt(new THREE.Vector3(0,0,0));
 
 	renderer = new THREE.WebGLRenderer();
+				renderer.setClearColor( 0x003300 );
+				renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
 	
@@ -151,10 +191,12 @@ function init() {
 
 	var planeGeometry = new THREE.PlaneGeometry(1000,1000, 1,1);
 	planeGeometry.rotateX(Math.PI/2);
-	var planeMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide})
+	var planeMaterial = new THREE.MeshBasicMaterial({color: 0x993300, side: THREE.DoubleSide, transparent: true})
 	plane = new THREE.Mesh(planeGeometry, planeMaterial);
 	plane.position.y=-0.5;
 	scene.add(plane);
+	
+	addGrassMeshPlane(grassMeshArray);
 	
 	var geometry = new THREE.SphereGeometry( 100, 32, 32 );
 	var material = new THREE.MeshBasicMaterial( {color: 0x33ccff} );
@@ -163,13 +205,13 @@ function init() {
 	scene.add( sphere );
 
 	grid = new THREE.GridHelper( 200, 10 );
-	grid.setColors( 0x000000, 0x000000 );
+	grid.setColors( 0xffff66, 0xffff66 );
 	scene.add(grid);
 	var axisHelper = new THREE.AxisHelper( 5 );
 	scene.add(axisHelper);
 
-	scene.fog = new THREE.FogExp2( 0x000000, 0.0128 );
-	renderer.setClearColor( scene.fog.color, 1 );
+// 	scene.fog = new THREE.FogExp2( 0x000000, 0.0128 );
+// 	renderer.setClearColor( scene.fog.color, 1 );
 
 	var userReticleMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
 	var userReticleGeometry = new THREE.SphereGeometry(RETICLE_RADIUS, 100);
@@ -181,6 +223,44 @@ function init() {
 
 	render();
 }
+
+function addGrassMeshPlane(meshArray) {
+	// var extent = Math.ceil(grassPlaneExtension/grassPlaneSize);
+// 	for (var x = -extent; x<extent; x+=grassPlaneSize) {
+// 		for (var z = -extent; z<extent; z+=grassPlaneSize) {
+			meshArray.forEach(function (mesh) {
+				var m = mesh.clone();
+				// m.position.x = x;
+// 				m.position.z = z;
+				scene.add(m);
+			});
+		//}
+	// }
+}
+
+function generateTexture() {
+
+				var canvas = document.createElement( 'canvas' );
+				canvas.width = 512*Math.pow(2, grassPlanePower);
+				canvas.height = 512*Math.pow(2, grassPlanePower);
+
+				var context = canvas.getContext( '2d' );
+
+				for ( var i = 0; i < 20000*Math.pow(2, grassPlanePower*2); i ++ ) {
+
+					context.fillStyle = 'hsl(0,0%,' + ( Math.random() * 50 + 50 ) + '%)';
+					context.beginPath();
+					context.arc( Math.random() * canvas.width, Math.random() * canvas.height, Math.random() + 0.15, 0, Math.PI * 2, true );
+					context.fill();
+
+				}
+
+				context.globalAlpha = 0.075;
+				context.globalCompositeOperation = 'lighter';
+
+				return canvas;
+
+			}
 
 function render() {
 	// if(rightButton) {
