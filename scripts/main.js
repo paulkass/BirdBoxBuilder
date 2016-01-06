@@ -29,6 +29,7 @@ var objectIds = [];
 var objectIdCount = 1;
 
 var controls;
+var objectControls;
 
 var scene;
 var camera;
