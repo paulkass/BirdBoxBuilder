@@ -99,6 +99,18 @@ function prep_func() {
 	promise.then(function() {
 		$("#splash_screen").hide();
 		console.log(JSON.stringify(objectPrototypeArrayNames));
+		
+		// Set Up Menu Bar Opener
+		$("#menu_bar_opener").css({
+			"position": "absolute",
+			"top": window.innerHeight*0.01,
+			"left": window.innerWidth*0.005
+		})
+		.click(function(e) {
+			toggleMenuBar();
+		})
+		.show();
+		
 		init();
 		populateObjectsMenu();
 	});
@@ -244,7 +256,7 @@ function rotate() {
 }
 
 function setUpControlListeners() {
-	$("canvas").mousemove(function(e) {
+	$(document).mousemove(function(e) {
 		mousePositionX = e.pageX;
 		mousePositionY = e.pageY;
 		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
@@ -287,7 +299,6 @@ function setUpControlListeners() {
 				control.setRotationSnap( THREE.Math.degToRad( 15 ) );
 				break;
 			case 102: // F
-				toggleMenuBar();
 				break;
 			case 32: // Space
 
@@ -365,6 +376,7 @@ function clearSelectedObject() {
 }
 
 $(document).ready(function() {
+	$("#menu_bar_opener").hide();
 	$("#loading_progressbar").progressbar({
 		value: 0
 	});

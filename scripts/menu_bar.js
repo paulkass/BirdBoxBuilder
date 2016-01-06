@@ -1,5 +1,6 @@
 var horizontalMarginFactor = 0.1;
 var heightFactor = 0.3;
+var menuHeight = heightFactor*window.innerHeight;
 
 var tabsWidth = (1-2*horizontalMarginFactor)*window.innerWidth;
 
@@ -16,7 +17,7 @@ $("#menu_bar").css({
 	"right": horizontalMarginFactor*window.innerWidth,
 	"left": horizontalMarginFactor*window.innerWidth,
 	"width": tabsWidth,
-	"height": heightFactor*window.innerHeight
+	"height": menuHeight
 });
 
 function enableSelectedObjectMenu() {
