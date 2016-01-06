@@ -1,3 +1,6 @@
 [submodule "bootstrap"]
 	path = bootstrap
 	url = https://github.com/twbs/bootstrap.git
+[submodule "texgen.js"]
+	path = texgen.js
+	url = https://github.com/mrdoob/texgen.js.git
