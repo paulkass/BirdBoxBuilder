@@ -31,6 +31,9 @@ var objectIdCount = 1;
 var controls;
 var objectControls;
 
+var raycaster = new THREE.Raycaster();
+var mouse = new THREE.Vector2();
+
 var scene;
 var camera;
 var renderer;
@@ -240,6 +243,8 @@ function setUpControlListeners() {
 	$("canvas").mousemove(function(e) {
 		mousePositionX = e.pageX;
 		mousePositionY = e.pageY;
+		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;	
 	});
 	$("canvas").mousedown(function(e) {
 	switch(e.which){
