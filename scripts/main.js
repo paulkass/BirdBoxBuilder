@@ -132,6 +132,9 @@ function init() {
 	controls.enableDamping = false;
 	controls.enableZoom = true;
 
+	objectControls = new THREE.TransformControls(camera, renderer.domElement);
+	objectControls.addEventListener('change', render);
+
 	var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 	scene.add(light);
 
@@ -188,6 +191,7 @@ function updateSelectedObjectPosition() {
 			var heldPos = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
 			selectedObject.position.set(heldPos.x, heldPos.y, heldPos.z);
 			selectedObject.lookAt(worldVector.add(cameraVector));
+			objectControls.update();
 			break;
 		case "tree":
 			var placementVector = getPlacementSpot();
@@ -249,7 +253,8 @@ function setUpControlListeners() {
 	$("canvas").mousedown(function(e) {
 	switch(e.which){
 		case 1:
-			addObjectToScene();
+			if(selectedObject)
+				addObjectToScene();
 			break;
 		case 2:
 
@@ -278,6 +283,10 @@ function setUpControlListeners() {
 
 	$(document).keypress(function(e) {
 		switch(e.keyCode){
+			case 17: // Ctrl
+				control.setTranslationSnap( 100 );
+				control.setRotationSnap( THREE.Math.degToRad( 15 ) );
+				break;
 			case 102: // F
 				toggleMenuBar();
 				break;
@@ -293,6 +302,8 @@ function setUpControlListeners() {
 function addObjectToScene() {
 	if (selectedObjectType=="plank") {
 		selectedObject.material = selectedObjectOriginalMaterial;
+		objectControls.detach(selectedObject);
+		scene.remove(objectControls);
 	}
 	clearSelectedObject();
 	objectIds.push(selectedObjectType+""+(objectIdCount-1));
@@ -333,6 +344,8 @@ function addSelectedObject(obj, type) {
 	if (type=="plank") {
 		selectedObjectOriginalMaterial = selectedObject.material;
 		selectedObject.material = wireframeMaterial;
+		objectControls.attach(obj);
+		scene.add(objectControls);
 	}
 	scene.add(selectedObject);
 	selectedObjectType = type;
