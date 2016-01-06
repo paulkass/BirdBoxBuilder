@@ -8,7 +8,8 @@ var iconLength = 0.5*tabsWidth;
 var canvasArray = []; // scene, camera, renderer, rotation
 
 $("#menu_bar").tabs({
-	collapsible: true
+	collapsible: true,
+	disabled: [1]
 });
 $("#menu_bar").hide();
 $("#menu_bar").css({
@@ -17,6 +18,14 @@ $("#menu_bar").css({
 	"width": tabsWidth,
 	"height": heightFactor*window.innerHeight
 });
+
+function enableSelectedObjectMenu() {
+	$("#menu_bar").tabs("enable", 1);
+}
+
+function disableSelectedObjectMenu() {
+	$("#menu_bar").tabs("disable", 1);
+}
 
 function getClickFunctionForName(name) {
 	var returnFunction = function() {};
@@ -29,6 +38,11 @@ function getClickFunctionForName(name) {
 			break;
 		case "plank":
 			returnFunction = addPlank();
+			break;
+		case "place": 
+			if(selectedObject) {
+				addObjectToScene();
+			}
 			break;
 		default: 
 			// not implemented
@@ -53,6 +67,10 @@ function populateObjectsMenu() {
 			addSpanToElement(mainDiv, type);
 		}
 	});
+	
+	var selectedObjectDiv = document.getElementById("tab2");
+	addSpanToElement(selectedObjectDiv, "place");
+	
 }
 
 function addSpanToElement(parent, childName) {

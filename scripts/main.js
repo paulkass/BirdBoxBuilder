@@ -253,8 +253,7 @@ function setUpControlListeners() {
 	$("canvas").mousedown(function(e) {
 	switch(e.which){
 		case 1:
-			if(selectedObject)
-				addObjectToScene();
+			
 			break;
 		case 2:
 
@@ -300,6 +299,7 @@ function setUpControlListeners() {
 }
 
 function addObjectToScene() {
+	disableSelectedObjectMenu();
 	if (selectedObjectType=="plank") {
 		selectedObject.material = selectedObjectOriginalMaterial;
 		objectControls.detach(selectedObject);
@@ -334,6 +334,7 @@ function addTree (type) {
 }
 
 function addSelectedObject(obj, type) {
+	enableSelectedObjectMenu();
 	if (selectedObject != 0) {
 		var currentObject = scene.getObjectByName(selectedObjectType+""+(objectIdCount-1));
 		scene.remove(currentObject);
