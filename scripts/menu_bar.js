@@ -20,6 +20,11 @@ $("#menu_bar").css({
 	// "height": menuHeight
 });
 
+for (var x=1; x<=4; x++) {
+	var id_prefix = "tab"+x;
+	document.getElementById(id_prefix).appendChild(getTable(3,4,id_prefix));
+}
+
 function enableSelectedObjectMenu() {
 	$("#menu_bar").tabs("enable", 1);
 	$("#tab2 > button").attr("disabled", false);
@@ -53,9 +58,13 @@ function getClickFunctionForName(name) {
 	return returnFunction;
 }
 
+
+
 function populateObjectsMenu() {
 	var objectCount = 0;
 	var mainDiv = document.getElementById("tab1");
+	
+	var cellCount = 0;
 	TYPES.forEach(function (type) {
 		var objectArray = objectPrototypeArrayNames.filter(function (v) {
 			return v.startsWith(type);
@@ -63,15 +72,22 @@ function populateObjectsMenu() {
 		
 		if (objectArray.length>0) {
 			objectArray.forEach(function (name) {
-				addButtonToElement(mainDiv, name);
+				var element = document.getElementById("tab1_"+(Math.floor((cellCount)/4)+1)+""+((cellCount)%4+1));
+				addButtonToElement(element, name);
+				cellCount++;
 			});
 		} else {
-			addButtonToElement(mainDiv, type);
+			var element = document.getElementById("tab1_"+(Math.floor((cellCount)/4)+1)+""+((cellCount)%4+1));
+			addButtonToElement(element, type);
+			cellCount++;
 		}
 	});
 	
 	var selectedObjectDiv = document.getElementById("tab2");
-	addButtonToElement(selectedObjectDiv, "place");
+	tableToAdd = getTable(3,4, "tab2");
+	selectedObjectDiv.appendChild(tableToAdd);
+	cellCount = 1;
+	addButtonToElement(document.getElementById("tab2_11"), "place");
 	
 }
 
@@ -85,11 +101,20 @@ function addButtonToElement(parent, childName) {
 	parent.appendChild(objectDiv);
 }
 
-function menuBarRendering() {
-	canvasArray.forEach(function (infoArray) {
-		requestAnimationFrame( menuBarRendering );
-		infoArray[2].render( infoArray[0], infoArray[1] );
-	});
+function getTable(row, col, id_prefix) { // id prefix cannot contain underscores
+	var table = document.createElement("TABLE");
+	
+	for (var r=1; r<=row; r++) {
+		var ro = document.createElement("TR");
+		for (var c=1; c<=col; c++) {
+			var column = document.createElement("TD");
+			column.setAttribute("id", id_prefix+"_"+r+""+c);
+			ro.appendChild(column);
+		}
+		table.appendChild(ro);
+	}
+	
+	return table;
 }
 
 function toggleMenuBar() {
