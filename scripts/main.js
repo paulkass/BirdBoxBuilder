@@ -198,7 +198,7 @@ function init() {
 	plane.name = "plane";
 	scene.add(plane);
 	
-	addGrassMeshPlane(grassMeshArray);
+	//addGrassMeshPlane(grassMeshArray);
 	
 	console.log("Added meshes to scene");
 	
