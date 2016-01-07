@@ -27,12 +27,12 @@ for (var x=1; x<=4; x++) {
 
 function enableSelectedObjectMenu() {
 	$("#menu_bar").tabs("enable", 1);
-	$("#tab2 > button").attr("disabled", false);
+	$("#tab2 button").attr("disabled", false);
 }
 
 function disableSelectedObjectMenu() {
 	$("#menu_bar").tabs("disable", 1);
-	$("#tab2 > button").attr("disabled", true);
+	$("#tab2 button").attr("disabled", true);
 }
 
 function getClickFunctionForName(name) {
