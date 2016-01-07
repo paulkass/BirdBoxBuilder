@@ -14,7 +14,6 @@ var TYPES = ["tree", "plank", "house"];
 // ---------
 
 var center = [Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2)];
-var controlBox = Math.floor(Math.min(window.innerWidth, window.innerHeight)/4);
 var mousePositionX = center[0];
 var mousePositionY = center[1];
 
@@ -34,7 +33,7 @@ var objectIds = [];
 var objectIdCount = 1;
 
 var controls;
-var objectControls;
+var gizmo;
 
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
@@ -183,8 +182,8 @@ function init() {
 	controls.enableDamping = false;
 	controls.enableZoom = true;
 
-	objectControls = new THREE.TransformControls(camera, renderer.domElement);
-	objectControls.addEventListener('change', render);
+	gizmo = new THREE.TransformControls(camera, renderer.domElement);
+	gizmo.addEventListener('objectChange', render);
 
 	var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 	scene.add(light);
@@ -194,6 +193,7 @@ function init() {
 	var planeMaterial = new THREE.MeshBasicMaterial({color: 0x993300, side: THREE.DoubleSide, transparent: true})
 	plane = new THREE.Mesh(planeGeometry, planeMaterial);
 	plane.position.y=-0.5;
+	plane.name = "plane";
 	scene.add(plane);
 	
 	addGrassMeshPlane(grassMeshArray);
@@ -263,13 +263,9 @@ function generateTexture() {
 			}
 
 function render() {
-	// if(rightButton) {
-// 		pan();
-// 	}
-// 	rotate();	
-	controls.update();
 	updateCameraReticle();
 	updateSelectedObjectPosition();
+	gizmo.update();
 	requestAnimationFrame( render );
 	renderer.render( scene, camera );
 }
@@ -283,6 +279,7 @@ function updateSelectedObjectPosition() {
 			selectedObject.position.set(heldPos.x, heldPos.y, heldPos.z);
 			//selectedObject.lookAt(worldVector.add(cameraVector));
 			objectControls.update();
+
 			break;
 		case "tree":
 			var placementVector = getPlacementSpot();
@@ -300,51 +297,26 @@ function updateCameraReticle() {
 	userReticle.position.set(reticlePositionVector.x, reticlePositionVector.y, reticlePositionVector.z)
 }
 
-function pan() {
-	var worldProjection = camera.getWorldDirection();
-	worldProjection.projectOnPlane(new THREE.Vector3(0,1,0)).normalize();
-	var strafeVector = worldProjection.clone().cross(new THREE.Vector3(0,1,0)).normalize().negate();
-	var deltaX = (mouseBufferX -mousePositionX)/window.innerWidth;
-	var deltaY = (mouseBufferY -mousePositionY)/window.innerHeight;
-	camera.position.add(worldProjection.multiplyScalar(deltaY)).add(strafeVector.multiplyScalar(deltaX));
-}
-function rotate() {
-	const worldVector = camera.getWorldDirection();
-	var upVector = new THREE.Vector3(0,1,0);
-	var tiltVector = new THREE.Vector3();
-	tiltVector.crossVectors(worldVector.clone(),upVector.clone()).normalize();
-	
-	// Mouse Position -> Rotation Code
-	// -------------------------------
-	if (mousePositionX-center[0]>controlBox)
-		worldVector.applyAxisAngle(upVector, -LEFT_RIGHT_ROTATION_COEFFICIENT*ANGLE_OF_ROTATION);
-	
-	if (mousePositionX-center[0]<-controlBox)
-		worldVector.applyAxisAngle(upVector, LEFT_RIGHT_ROTATION_COEFFICIENT*ANGLE_OF_ROTATION);
-
-	if (mousePositionY-center[1]>controlBox)
-		worldVector.applyAxisAngle(tiltVector, -ANGLE_OF_ROTATION);
-
-	if (mousePositionY-center[1]<-controlBox)
-		worldVector.applyAxisAngle(tiltVector, ANGLE_OF_ROTATION);
-	
-	// --------------------------------------
-	
-	var cameraVector = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
-	camera.lookAt(worldVector.add(cameraVector));
+function raycast () {
+	raycaster.setFromCamera(mouse, camera);
+	var intersects = raycaster.intersectObjects(scene.children);
+	if(intersects.length > 0 && intersects[0].object.name.includes("plank"))
+	{
+		addSelectedObject(intersects[0].object, "plank", true);
+	}
 }
 
 function setUpControlListeners() {
 	$(document).mousemove(function(e) {
 		mousePositionX = e.pageX;
 		mousePositionY = e.pageY;
-		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;	
+		mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
+		mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;	
 	});
 	$("canvas").mousedown(function(e) {
 	switch(e.which){
 		case 1:
-			
+			raycast();
 			break;
 		case 2:
 
@@ -371,17 +343,40 @@ function setUpControlListeners() {
 		}
 	});	
 
-	$(document).keypress(function(e) {
+	$(document).keydown(function(e) {
 		switch(e.keyCode){
-			case 17: // Ctrl
-				control.setTranslationSnap( 100 );
-				control.setRotationSnap( THREE.Math.degToRad( 15 ) );
+			//to be changed into buttons
+			case 81: // Q
+				gizmo.setSpace( gizmo.space === "local" ? "world" : "local" );
 				break;
-			case 102: // F
-				break;
-			case 32: // Space
 
+			case 17: // Ctrl
+				gizmo.setTranslationSnap( 100 );
+				gizmo.setRotationSnap( THREE.Math.degToRad( 15 ) );
 				break;
+
+			case 87: // W
+				gizmo.setMode( "translate" );
+				break;
+
+			case 69: // E
+				gizmo.setMode( "rotate" );
+				break;
+
+			case 82: // R
+				gizmo.setMode( "scale" );
+				break;
+
+			case 187:
+			case 107: // +, =, num+
+				gizmo.setSize( gizmo.size + 0.1 );
+				break;
+
+			case 189:
+			case 109: // -, _, num-
+				gizmo.setSize( Math.max( gizmo.size - 0.1, 0.1 ) );
+				break;
+				
 			default:
 				//alert(e.keyCode);
 		}
@@ -392,8 +387,8 @@ function addObjectToScene() {
 	disableSelectedObjectMenu();
 	if (selectedObjectType=="plank") {
 		selectedObject.material = selectedObjectOriginalMaterial;
-		objectControls.detach(selectedObject);
-		scene.remove(objectControls);
+		scene.remove(gizmo);
+		gizmo.detach(selectedObject);
 	}
 	clearSelectedObject();
 	objectIds.push(selectedObjectType+""+(objectIdCount-1));
@@ -415,15 +410,15 @@ function addPlank () {
 	var plankMaterial = new THREE.MeshLambertMaterial({color: 0x804000, fog: true});
 	var plankGeometry = new THREE.BoxGeometry(1, 1, 1);
 	var plank = new THREE.Mesh(plankGeometry, plankMaterial);
-	addSelectedObject(plank, "plank");
+	addSelectedObject(plank, "plank", false);
 }
 
 function addTree (type) {
 	var tree = getTree(type);
-	addSelectedObject(tree, "tree");
+	addSelectedObject(tree, "tree", false);
 }
 
-function addSelectedObject(obj, type) {
+function addSelectedObject(obj, type, existing) {
 	enableSelectedObjectMenu();
 	if (selectedObject != 0) {
 		var currentObject = scene.getObjectByName(selectedObjectType+""+(objectIdCount-1));
@@ -431,16 +426,21 @@ function addSelectedObject(obj, type) {
 		clearSelectedObject();
 	}
 	selectedObject = obj;
-	selectedObject.name = type+""+getObjectIdCount();
+	selectedObjectType = type;
+	if(!existing)
+		selectedObject.name = type+""+getObjectIdCount();
 	if (type=="plank") {
+		gizmo.attach(obj);
+		scene.add(gizmo);
 		selectedObjectOriginalMaterial = selectedObject.material;
 		selectedObject.material = wireframeMaterial;
-		objectControls.attach(obj);
-		scene.add(objectControls);
 	}
-	scene.add(selectedObject);
-	selectedObjectType = type;
+	if(!existing)
+		scene.add(selectedObject);
+
 }
+
+
 
 function getObjectIdCount() {
 	var returnCount = objectIdCount;
