@@ -283,7 +283,7 @@ function updateSelectedObjectPosition() {
 			var heldPos = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
 			selectedObject.position.set(heldPos.x, heldPos.y, heldPos.z);
 			//selectedObject.lookAt(worldVector.add(cameraVector));
-			objectControls.update();
+			gizmo.update();
 
 			break;
 		case "tree":
