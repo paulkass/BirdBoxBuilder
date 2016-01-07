@@ -223,7 +223,7 @@ function init() {
 	var userReticleMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
 	var userReticleGeometry = new THREE.SphereGeometry(RETICLE_RADIUS, 100);
 	userReticle = new THREE.Mesh(userReticleGeometry, userReticleMaterial);
-	updateCameraReticle();
+	updateReticle(camera.position.clone(), camera.getWorldDirection().clone().normalize());
 	scene.add(userReticle);
 	
 	setUpControlListeners();
@@ -271,20 +271,22 @@ function generateTexture() {
 			}
 
 function render() {
-	updateCameraReticle();
-	updateSelectedObjectPosition();
+	updateSelectedObjectAndCamera();
 //	gizmo.update();
 	requestAnimationFrame( render );
 	renderer.render( scene, camera );
 }
 
-function updateSelectedObjectPosition() {
+function updateSelectedObjectAndCamera() {
+	var cameraVector = camera.position.clone();
+	var worldVector = camera.getWorldDirection().clone().normalize();
+	updateReticle(cameraVector, worldVector);
 	switch (selectedObjectType) {
 		case "plank" :
-			var cameraVector = camera.position.clone();
-			var worldVector = camera.getWorldDirection().clone().normalize();
-			var heldPos = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
-			selectedObject.position.set(heldPos.x, heldPos.y, heldPos.z);
+			var heldPosVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
+			selectedObject.position.set(heldPosVector.x, heldPosVector.y, heldPosVector.z);
+			camera.lookAt(selectedObject.position);
+			updateReticle(cameraVector, worldVector);
 			//selectedObject.lookAt(worldVector.add(cameraVector));
 			//gizmo.update();
 			break;
@@ -297,11 +299,10 @@ function updateSelectedObjectPosition() {
 	}
 }
 
-function updateCameraReticle() {
-	var cameraVector = camera.position.clone();
-	var worldVector = camera.getWorldDirection().clone().normalize();
-	var reticlePositionVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_RETICLE_SCALAR));
-	userReticle.position.set(reticlePositionVector.x, reticlePositionVector.y, reticlePositionVector.z)
+function updateReticle (cameraVector, worldVector) {
+	
+	var reticleVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_RETICLE_SCALAR));
+	userReticle.position.set(reticleVector.x, reticleVector.y, reticleVector.z);
 }
 
 function raycast () {
@@ -426,8 +427,10 @@ function addTree (type) {
 }
 
 function addSelectedObject(obj, type, existing) {
+	if(selectedObject && existing)
+		return;
 	enableSelectedObjectMenu();
-	if (selectedObject != 0) {
+	if (selectedObject) {
 		var currentObject = scene.getObjectByName(selectedObjectType+""+(objectIdCount-1));
 		scene.remove(currentObject);
 		clearSelectedObject();
