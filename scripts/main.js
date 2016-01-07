@@ -184,21 +184,21 @@ function init() {
 	controls.enableDamping = false;
 	controls.enableZoom = true;
 
-	gizmo = new THREE.TransformControls(camera, renderer.domElement);
-	gizmo.addEventListener('objectChange', render);
+//	gizmo = new THREE.TransformControls(camera, renderer.domElement);
+//	gizmo.addEventListener('objectChange', render);
 
 	var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 	scene.add(light);
 
 	var planeGeometry = new THREE.PlaneGeometry(1000,1000, 1,1);
 	planeGeometry.rotateX(Math.PI/2);
-	var planeMaterial = new THREE.MeshBasicMaterial({color: 0x993300, side: THREE.DoubleSide, transparent: true})
+	var planeMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide, transparent: true})
 	plane = new THREE.Mesh(planeGeometry, planeMaterial);
 	plane.position.y=-0.5;
 	plane.name = "plane";
 	scene.add(plane);
 	
-	addGrassMeshPlane(grassMeshArray);
+	//addGrassMeshPlane(grassMeshArray);
 	
 	console.log("Added meshes to scene");
 	
@@ -209,7 +209,7 @@ function init() {
 	scene.add( sphere );
 
 	grid = new THREE.GridHelper( 200, 10 );
-	grid.setColors( 0xffff66, 0xffff66 );
+	grid.setColors( 0x000000, 0x000000 );
 	scene.add(grid);
 	var axisHelper = new THREE.AxisHelper( 5 );
 	scene.add(axisHelper);
@@ -270,7 +270,7 @@ function generateTexture() {
 function render() {
 	updateCameraReticle();
 	updateSelectedObjectPosition();
-	gizmo.update();
+//	gizmo.update();
 	requestAnimationFrame( render );
 	renderer.render( scene, camera );
 }
@@ -283,7 +283,7 @@ function updateSelectedObjectPosition() {
 			var heldPos = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
 			selectedObject.position.set(heldPos.x, heldPos.y, heldPos.z);
 			//selectedObject.lookAt(worldVector.add(cameraVector));
-
+			//gizmo.update();
 			break;
 		case "tree":
 			var placementVector = getPlacementSpot();
@@ -351,34 +351,34 @@ function setUpControlListeners() {
 		switch(e.keyCode){
 			//to be changed into buttons
 			case 81: // Q
-				gizmo.setSpace( gizmo.space === "local" ? "world" : "local" );
+//				gizmo.setSpace( gizmo.space === "local" ? "world" : "local" );
 				break;
 
 			case 17: // Ctrl
-				gizmo.setTranslationSnap( 100 );
-				gizmo.setRotationSnap( THREE.Math.degToRad( 15 ) );
+//				gizmo.setTranslationSnap( 100 );
+//				gizmo.setRotationSnap( THREE.Math.degToRad( 15 ) );
 				break;
 
 			case 87: // W
-				gizmo.setMode( "translate" );
+//				gizmo.setMode( "translate" );
 				break;
 
 			case 69: // E
-				gizmo.setMode( "rotate" );
+//				gizmo.setMode( "rotate" );
 				break;
 
 			case 82: // R
-				gizmo.setMode( "scale" );
+//				gizmo.setMode( "scale" );
 				break;
 
 			case 187:
 			case 107: // +, =, num+
-				gizmo.setSize( gizmo.size + 0.1 );
+//				gizmo.setSize( gizmo.size + 0.1 );
 				break;
 
 			case 189:
 			case 109: // -, _, num-
-				gizmo.setSize( Math.max( gizmo.size - 0.1, 0.1 ) );
+//				gizmo.setSize( Math.max( gizmo.size - 0.1, 0.1 ) );
 				break;
 				
 			default:
@@ -391,8 +391,8 @@ function addObjectToScene() {
 	disableSelectedObjectMenu();
 	if (selectedObjectType=="plank") {
 		selectedObject.material = selectedObjectOriginalMaterial;
-		scene.remove(gizmo);
-		gizmo.detach(selectedObject);
+//		scene.remove(gizmo);
+//		gizmo.detach(selectedObject);
 	}
 	clearSelectedObject();
 	objectIds.push(selectedObjectType+""+(objectIdCount-1));
@@ -434,8 +434,8 @@ function addSelectedObject(obj, type, existing) {
 	if(!existing)
 		selectedObject.name = type+""+getObjectIdCount();
 	if (type=="plank") {
-		gizmo.attach(obj);
-		scene.add(gizmo);
+//		gizmo.attach(obj);
+//		scene.add(gizmo);
 		selectedObjectOriginalMaterial = selectedObject.material;
 		selectedObject.material = wireframeMaterial;
 	}
