@@ -192,7 +192,7 @@ function init() {
 
 	var planeGeometry = new THREE.PlaneGeometry(1000,1000, 1,1);
 	planeGeometry.rotateX(Math.PI/2);
-	var planeMaterial = new THREE.MeshBasicMaterial({color: 0x993300, side: THREE.DoubleSide, transparent: true})
+	var planeMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide, transparent: true})
 	plane = new THREE.Mesh(planeGeometry, planeMaterial);
 	plane.position.y=-0.5;
 	plane.name = "plane";
@@ -209,7 +209,7 @@ function init() {
 	scene.add( sphere );
 
 	grid = new THREE.GridHelper( 200, 10 );
-	grid.setColors( 0xffff66, 0xffff66 );
+	grid.setColors( 0x000000, 0x000000 );
 	scene.add(grid);
 	var axisHelper = new THREE.AxisHelper( 5 );
 	scene.add(axisHelper);
