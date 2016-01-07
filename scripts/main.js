@@ -116,7 +116,10 @@ function prep_func() {
 		var promise2 = new Promise(loadPromiseFunction);
 		var x = function() {
 			loadCount = 0;
-			var meshPromiseLoad = new Promise(loadGrassMeshes);
+			//var meshPromiseLoad = new Promise(loadGrassMeshes);
+			var meshPromiseLoad = new Promise(function(res, rej) {
+				res();
+			});
 			meshPromiseLoad.then(function() {
 				console.log("Done loading meshes.");
 				resolve();
@@ -175,8 +178,8 @@ function init() {
 	camera.lookAt(new THREE.Vector3(0,0,0));
 
 	renderer = new THREE.WebGLRenderer();
-				renderer.setClearColor( 0x003300 );
-				renderer.setPixelRatio( window.devicePixelRatio );
+	renderer.setClearColor( 0x003300 );
+	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
 	
