@@ -53,7 +53,8 @@ var selectedObjectType = ""; // empty string when there is no object to be used
 
 var wireframeMaterial = material = new THREE.MeshBasicMaterial({
     color: 0xff0000,
-    wireframe: true
+    wireframe: true,
+    transparent: false
 });
 
 var loadCount = 0;
@@ -99,6 +100,7 @@ function loadGrassMeshes(resolve, reject) {
 		} );
 
 		var mesh = new THREE.Mesh( planeGeometry, material );
+		mesh.renderOrder = 100;
 
 		mesh.position.y = i * 0.01;
 		mesh.rotation.x = - Math.PI / 2;
@@ -198,8 +200,10 @@ function init() {
 	
 	addGrassMeshPlane(grassMeshArray);
 	
+	console.log("Added meshes to scene");
+	
 	var geometry = new THREE.SphereGeometry( 100, 32, 32 );
-	var material = new THREE.MeshBasicMaterial( {color: 0x33ccff} );
+	var material = new THREE.MeshLambertMaterial( {color: 0x33ccff} );
 	material.side = THREE.DoubleSide;
 	var sphere = new THREE.Mesh( geometry, material );
 	scene.add( sphere );
@@ -221,6 +225,7 @@ function init() {
 	
 	setUpControlListeners();
 
+	console.log("started rendering");
 	render();
 }
 
@@ -255,7 +260,7 @@ function generateTexture() {
 
 				}
 
-				context.globalAlpha = 0.075;
+				//context.globalAlpha = 0.075;
 				context.globalCompositeOperation = 'lighter';
 
 				return canvas;
@@ -412,7 +417,7 @@ function getPlacementSpot() {
 }
 
 function addPlank () {
-	var plankMaterial = new THREE.MeshLambertMaterial({color: 0x804000, fog: true});
+	var plankMaterial = new THREE.MeshLambertMaterial({color: 0x804000, fog: true, transparent: false});
 	var plankGeometry = new THREE.BoxGeometry(1, 1, 1);
 	var plank = new THREE.Mesh(plankGeometry, plankMaterial);
 	addSelectedObject(plank, "plank");
