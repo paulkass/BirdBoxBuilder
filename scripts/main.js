@@ -450,7 +450,9 @@ function addSelectedObject(obj, type, existing) {
 
 }
 
-
+function unselectCurrentObject() {
+	alert("hi");
+}
 
 function getObjectIdCount() {
 	var returnCount = objectIdCount;

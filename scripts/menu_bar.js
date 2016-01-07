@@ -52,6 +52,9 @@ function getClickFunctionForName(name) {
 				addObjectToScene();
 			}
 			break;
+		case "unselect":
+			unselectCurrentObject();
+			break;
 		default: 
 			// not implemented
 	}
@@ -88,6 +91,7 @@ function populateObjectsMenu() {
 	selectedObjectDiv.appendChild(tableToAdd);
 	cellCount = 1;
 	addButtonToElement(document.getElementById("tab2_11"), "place");
+	addButtonToElement(document.getElementById("tab2_12"), "unselect");
 	
 }
 
