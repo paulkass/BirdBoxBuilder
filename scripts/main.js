@@ -46,6 +46,7 @@ var plane;
 var grid;
 var userReticle;
 
+var oldMatrix = null;
 var selectedObject = 0; // the value is 0 if not used.
 var selectedObjectMaterial = 0;
 var selectedObjectType = ""; // empty string when there is no object to be used
@@ -308,8 +309,9 @@ function updateReticle (cameraVector, worldVector) {
 function raycast () {
 	raycaster.setFromCamera(mouse, camera);
 	var intersects = raycaster.intersectObjects(scene.children);
-	if(intersects.length > 0 && intersects[0].object.name.includes("plank"))
+	if(intersects.length > 0 && intersects[0].object.name.includes("plank") && intersects[0].object != selectedObject)
 	{
+		oldMatrix = [intersects[0].object.position.clone(), intersects[0].object.quaternion.clone(), intersects[0].object.scale.clone()];
 		addSelectedObject(intersects[0].object, "plank", true);
 	}
 }
@@ -391,17 +393,6 @@ function setUpControlListeners() {
 	});
 }
 
-function addObjectToScene() {
-	disableSelectedObjectMenu();
-	if (selectedObjectType=="plank") {
-		selectedObject.material = selectedObjectOriginalMaterial;
-//		scene.remove(gizmo);
-//		gizmo.detach(selectedObject);
-	}
-	clearSelectedObject();
-	objectIds.push(selectedObjectType+""+(objectIdCount-1));
-	console.log(JSON.stringify(objectIds));
-}
 
 function getPlacementSpot() {
 	var ray = new THREE.Ray(new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z), camera.getWorldDirection());
@@ -431,9 +422,9 @@ function addSelectedObject(obj, type, existing) {
 		return;
 	enableSelectedObjectMenu();
 	if (selectedObject) {
-		var currentObject = scene.getObjectByName(selectedObjectType+""+(objectIdCount-1));
-		scene.remove(currentObject);
-		clearSelectedObject();
+//		var currentObject = scene.getObjectByName(selectedObjectType+""+(objectIdCount-1));
+//		scene.remove(currentObject);
+		clearSelectedObject(true, false);
 	}
 	selectedObject = obj;
 	selectedObjectType = type;
@@ -451,7 +442,13 @@ function addSelectedObject(obj, type, existing) {
 }
 
 function unselectCurrentObject() {
-	alert("hi");
+	if(oldMatrix)
+	{
+		restoreCurrentObject(oldMatrix);
+		oldMatrix = null;
+	}
+	else
+		clearSelectedObject(true, true);
 }
 
 function getObjectIdCount() {
@@ -460,10 +457,36 @@ function getObjectIdCount() {
 	return returnCount;
 }
 
-function clearSelectedObject() {
+function addObjectToScene() {
+	disableSelectedObjectMenu();
+	if (selectedObjectType=="plank") {
+		selectedObject.material = selectedObjectOriginalMaterial;
+	}
+	clearSelectedObject(false, true);
+	objectIds.push(selectedObjectType+""+(objectIdCount-1));
+	console.log(JSON.stringify(objectIds));
+}
+
+function restoreCurrentObject(oldMatrix) {
+	disableSelectedObjectMenu();
+	selectedObject.position.copy(oldMatrix[0].clone());
+	selectedObject.quaternion.copy(oldMatrix[1].clone());
+	selectedObject.scale.copy(oldMatrix[2].clone());
+	addObjectToScene();
+}
+
+function clearSelectedObject(remove, disableMenu) {
+	if(disableMenu)
+		disableSelectedObjectMenu();
+//	scene.remove(gizmo);
+//	gizmo.detach(selectedObject);
+	if(remove)
+		scene.remove(selectedObject);
 	selectedObject = 0;
 	selectedObjectOriginalMaterial = 0;
 	selectedObjectType = "";
+	objectIds.splice(objectIdCount-1, 1);
+	console.log(JSON.stringify(objectIds));
 }
 
 $(document).ready(function() {
