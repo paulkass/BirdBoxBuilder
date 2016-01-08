@@ -303,22 +303,34 @@ function updateSelectedObjectAndCamera() {
 }
 
 function updateReticle (cameraVector, worldVector) {
-	
 	var reticleVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_RETICLE_SCALAR));
 	userReticle.position.set(reticleVector.x, reticleVector.y, reticleVector.z);
 }
 
 function raycast () {
+	// TESTING CODE
+	// for (var i=0; i<scene.children.length; i++) {
+// 		console.log("hi"+scene.children[i].name);
+// 	}
+	// ************
 	raycaster.setFromCamera(mouse, camera);
-	var intersects = raycaster.intersectObjects(scene.children);
+	var intersects = raycaster.intersectObjects(scene.children, true);
 	var objectToBeSelected;
 	if(intersects.length > 0 && intersects[0].object != selectedObject) {
 		for (var i = 0; i < intersects.length; i++) {
-			if(intersects[i].object.name.includes("plank") || intersects[i].object.name.includes("tree")) {
+			//intersects[i].object.material.color.set(0xff0000);
+			//console.log("LOl"+intersects[i].object.name);
+			if(intersects[i].object.name.includes("plank")) {
 				objectToBeSelected = intersects[i].object;
 				oldMatrix = [objectToBeSelected.position.clone(), objectToBeSelected.quaternion.clone(), objectToBeSelected.scale.clone()];
 				addSelectedObject(objectToBeSelected, "plank", true);
 				return;
+			} else if (intersects[i].object.parent.name.includes("tree")) {
+				objectToBeSelected = intersects[i].object.parent;
+				oldMatrix = [objectToBeSelected.position.clone(), objectToBeSelected.quaternion.clone(), objectToBeSelected.scale.clone()];
+				addSelectedObject(objectToBeSelected, "tree", true);
+			} else {
+			
 			}
 		};
 	}
@@ -422,6 +434,7 @@ function addPlank () {
 
 function addTree (type) {
 	var tree = getTree(type);
+	console.log("Adding a tree");
 	addSelectedObject(tree, "tree", false);
 }
 
@@ -436,26 +449,28 @@ function addSelectedObject(obj, type, existing) {
 	}
 	selectedObject = obj;
 	selectedObjectType = type;
-	if(!existing)
+	if(!existing) {
 		selectedObject.name = type+""+getObjectIdCount();
+	}
 	if (type=="plank") {
 //		gizmo.attach(obj);
 //		scene.add(gizmo);
 	}
-	selectedObject.traverse( function( child ) {
-
+	selectedObject.traverse(function (child) {
     	if ( child instanceof THREE.Mesh ) {
-
         	var wh = new THREE.WireframeHelper( child, 0xff0000 );
         	wh.name = "wireframe"+wireframeArray.length;
         	wireframeArray.push(wh);
         	scene.add( wh );
-
     	}
-
-	} );
-	if(!existing)
-		scene.add(selectedObject);
+	});
+	if(!existing) {
+		for (var i=0; i<selectedObject.children.length; i++) {
+			selectedObject.children[i].name = "Lol";
+		}
+		console.log("Added an object with the name "+selectedObject.name);
+		scene.children.push(selectedObject);
+	}
 
 }
 
