@@ -198,7 +198,7 @@ function init() {
 
 	var planeGeometry = new THREE.PlaneGeometry(1000,1000, 1,1);
 	planeGeometry.rotateX(Math.PI/2);
-	var planeMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide, transparent: true})
+	var planeMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide, transparent: true});
 	plane = new THREE.Mesh(planeGeometry, planeMaterial);
 	plane.position.y=-0.5;
 	plane.name = "plane";
@@ -345,7 +345,7 @@ function setUpControlListeners() {
 		mousePositionX = e.pageX;
 		mousePositionY = e.pageY;
 		mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
-		mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;	
+		mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
 	});
 	$("canvas").mousedown(function(e) {
 	mouseFlag = false;
@@ -419,7 +419,6 @@ function setUpControlListeners() {
 		}
 	});
 }
-
 
 function getPlacementSpot() {
 	var ray = new THREE.Ray(new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z), camera.getWorldDirection());
@@ -499,7 +498,7 @@ function getObjectIdCount() {
 
 function addObjectToScene() {
 	disableSelectedObjectMenu();
-	// if (selectedObjectType=="plank") {
+//	if (selectedObjectType=="plank") {
 // 		selectedObject.material = selectedObjectOriginalMaterial;
 // 	}
 	clearSelectedObject(false, true);
