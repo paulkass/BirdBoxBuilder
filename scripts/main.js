@@ -317,9 +317,10 @@ function raycast () {
 	var intersects = raycaster.intersectObjects(scene.children, true);
 	var objectToBeSelected;
 	if(intersects.length > 0 && intersects[0].object != selectedObject) {
-		for (var i = 0; i < intersects.length; i++) {
+		//for (var i = 0; i < intersects.length; i++) {
 			//intersects[i].object.material.color.set(0xff0000);
 			//console.log("LOl"+intersects[i].object.name);
+			var i = 0;
 			if(intersects[i].object.name.includes("plank")) {
 				objectToBeSelected = intersects[i].object;
 				oldMatrix = [objectToBeSelected.position.clone(), objectToBeSelected.quaternion.clone(), objectToBeSelected.scale.clone()];
@@ -332,7 +333,7 @@ function raycast () {
 			} else {
 			
 			}
-		};
+		//};
 	}
 }
 
@@ -466,7 +467,7 @@ function addSelectedObject(obj, type, existing) {
 	});
 	if(!existing) {
 		for (var i=0; i<selectedObject.children.length; i++) {
-			selectedObject.children[i].name = "Lol";
+			selectedObject.children[i].name = "child_of_tree";
 		}
 		console.log("Added an object with the name "+selectedObject.name);
 		scene.children.push(selectedObject);
