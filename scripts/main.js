@@ -51,7 +51,9 @@ var selectedObject = 0; // the value is 0 if not used.
 var selectedObjectMaterial = 0;
 var selectedObjectType = ""; // empty string when there is no object to be used
 
-var wireframeMaterial = material = new THREE.MeshBasicMaterial({
+var wireframeArray = [];
+
+var wireframeMaterial = new THREE.MeshBasicMaterial({
     color: 0xff0000,
     wireframe: true,
     transparent: false
@@ -433,9 +435,19 @@ function addSelectedObject(obj, type, existing) {
 	if (type=="plank") {
 //		gizmo.attach(obj);
 //		scene.add(gizmo);
-		selectedObjectOriginalMaterial = selectedObject.material;
-		selectedObject.material = wireframeMaterial;
 	}
+	selectedObject.traverse( function( child ) {
+
+    	if ( child instanceof THREE.Mesh ) {
+
+        	var wh = new THREE.WireframeHelper( child, 0xff0000 );
+        	wh.name = "wireframe"+wireframeArray.length;
+        	wireframeArray.push(wh);
+        	scene.add( wh );
+
+    	}
+
+	} );
 	if(!existing)
 		scene.add(selectedObject);
 
@@ -459,9 +471,9 @@ function getObjectIdCount() {
 
 function addObjectToScene() {
 	disableSelectedObjectMenu();
-	if (selectedObjectType=="plank") {
-		selectedObject.material = selectedObjectOriginalMaterial;
-	}
+	// if (selectedObjectType=="plank") {
+// 		selectedObject.material = selectedObjectOriginalMaterial;
+// 	}
 	clearSelectedObject(false, true);
 	objectIds.push(selectedObjectType+""+(objectIdCount-1));
 	console.log(JSON.stringify(objectIds));
@@ -482,6 +494,10 @@ function clearSelectedObject(remove, disableMenu) {
 //	gizmo.detach(selectedObject);
 	if(remove)
 		scene.remove(selectedObject);
+	wireframeArray.forEach(function (w) {
+		scene.remove(w);
+	});
+	wireframeArray = [];
 	selectedObject = 0;
 	selectedObjectOriginalMaterial = 0;
 	selectedObjectType = "";

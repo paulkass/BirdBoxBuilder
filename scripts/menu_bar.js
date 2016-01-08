@@ -47,6 +47,10 @@ function getClickFunctionForName(name) {
 		case "plank":
 			returnFunction = addPlank();
 			break;
+		case "house":
+			// TEMP FUNCTION: TO BE REMOVED LATER
+			returnFunction = lololol();
+			break;
 		case "place": 
 			if(selectedObject) {
 				addObjectToScene();
@@ -61,7 +65,14 @@ function getClickFunctionForName(name) {
 	return returnFunction;
 }
 
-
+function lololol() {
+				var house = objectPrototypeArray[objectWithNameIndex("house")].clone();
+				house.position.x = 0;
+				house.position.y = 0;
+				house.position.z = 0;
+				console.log(JSON.stringify(house.geometry));
+				addSelectedObject(house, "house", false);
+}
 
 function populateObjectsMenu() {
 	var objectCount = 0;
