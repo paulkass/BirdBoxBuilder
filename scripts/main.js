@@ -311,10 +311,16 @@ function updateReticle (cameraVector, worldVector) {
 function raycast () {
 	raycaster.setFromCamera(mouse, camera);
 	var intersects = raycaster.intersectObjects(scene.children);
-	if(intersects.length > 0 && intersects[0].object.name.includes("plank") && intersects[0].object != selectedObject)
-	{
-		oldMatrix = [intersects[0].object.position.clone(), intersects[0].object.quaternion.clone(), intersects[0].object.scale.clone()];
-		addSelectedObject(intersects[0].object, "plank", true);
+	var objectToBeSelected;
+	if(intersects.length > 0 && intersects[0].object != selectedObject) {
+		for (var i = 0; i < intersects.length; i++) {
+			if(intersects[i].object.name.includes("plank") || intersects[i].object.name.includes("tree")) {
+				objectToBeSelected = intersects[i].object;
+				oldMatrix = [objectToBeSelected.position.clone(), objectToBeSelected.quaternion.clone(), objectToBeSelected.scale.clone()];
+				addSelectedObject(objectToBeSelected, "plank", true);
+				return;
+			}
+		};
 	}
 }
 
