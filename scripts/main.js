@@ -12,6 +12,7 @@ var WORLD_TO_PLANK_SCALAR = 10;
 var OBJECT_SOURCES_ARRAY = ["tree1.json", "tree2.json", "house.json"];
 var TYPES = ["tree", "plank", "house"];
 var ROTATION_UNIT = Math.PI/6;
+var INITIAL_PLANK_DIMENSIONS = [0.5,3,3] // [width, length, height]
 // ---------
 
 var center = [Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2)];
@@ -464,8 +465,38 @@ function getPlacementSpot() {
 }
 
 function addPlank () {
-	var plankMaterial = new THREE.MeshLambertMaterial({color: 0x804000, fog: true, transparent: false});
-	var plankGeometry = new THREE.BoxGeometry(1, 1, 1);
+	var plankMaterial = new THREE.MeshBasicMaterial({color: 0x804000, fog: true, transparent: false, side: THREE.DoubleSide});
+	
+	var plankGeometry = new THREE.Geometry();
+	var plankVertices = [
+			INITIAL_PLANK_DIMENSIONS[1]/2,-INITIAL_PLANK_DIMENSIONS[2]/2,INITIAL_PLANK_DIMENSIONS[0]/2,
+			-INITIAL_PLANK_DIMENSIONS[1]/2,-INITIAL_PLANK_DIMENSIONS[2]/2,INITIAL_PLANK_DIMENSIONS[0]/2,
+			INITIAL_PLANK_DIMENSIONS[1]/2,-INITIAL_PLANK_DIMENSIONS[2]/2,-INITIAL_PLANK_DIMENSIONS[0]/2,
+			-INITIAL_PLANK_DIMENSIONS[1]/2,-INITIAL_PLANK_DIMENSIONS[2]/2,-INITIAL_PLANK_DIMENSIONS[0]/2,
+			INITIAL_PLANK_DIMENSIONS[1]/2,INITIAL_PLANK_DIMENSIONS[2]/2,INITIAL_PLANK_DIMENSIONS[0]/2,
+			-INITIAL_PLANK_DIMENSIONS[1]/2,INITIAL_PLANK_DIMENSIONS[2]/2,INITIAL_PLANK_DIMENSIONS[0]/2,
+			INITIAL_PLANK_DIMENSIONS[1]/2,INITIAL_PLANK_DIMENSIONS[2]/2,-INITIAL_PLANK_DIMENSIONS[0]/2,
+			-INITIAL_PLANK_DIMENSIONS[1]/2,INITIAL_PLANK_DIMENSIONS[2]/2,-INITIAL_PLANK_DIMENSIONS[0]/2,
+	];
+	var plankFaces = [
+		2,3,1,1,0,2,
+		0,4,6,6,2,0,
+		1,5,7,7,3,1,
+		0,1,5,5,4,0,
+		4,6,7,7,5,4,
+		2,6,7,7,3,2
+	];
+	
+	for (var i=0; i<plankVertices.length; i+=3) {
+		plankGeometry.vertices.push(new THREE.Vector3(plankVertices[i], plankVertices[i+1], plankVertices[i+2]));
+	}
+	
+	for (var i=0; i<plankFaces.length; i+=3) {
+		plankGeometry.faces.push(new THREE.Face3(plankFaces[i], plankFaces[i+1], plankFaces[i+2]));
+	}
+	plankGeometry.computeBoundingSphere();
+	//var plankGeometry = new THREE.BoxGeometry(1, 1, 1);
+	
 	var plank = new THREE.Mesh(plankGeometry, plankMaterial);
 	addSelectedObject(plank, "plank", false);
 }
