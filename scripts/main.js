@@ -339,8 +339,15 @@ function raycast () {
 }
 
 function jumpCamera () {
-	camera.position.x = getPlacementSpot().x;
-	camera.position.z = getPlacementSpot().z;
+	raycaster.setFromCamera(mouse,camera);
+	var intersects = raycaster.intersectObject(scene.getObjectByName("plane"), true);
+	if(intersects.length) {
+		camera.translateX(intersects[0].point.clone().x -camera.position.x);
+		camera.translateZ(intersects[0].point.clone().z -camera.position.z);
+		camera.updateMatrix();
+		controls.update();
+	}
+
 }
 
 function setUpControlListeners() {
@@ -348,40 +355,8 @@ function setUpControlListeners() {
 		mouseFlag = true;
 		mousePositionX = e.pageX;
 		mousePositionY = e.pageY;
-		mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
-		mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
-	});
-	$("canvas").mousedown(function(e) {
-	mouseFlag = false;
-	switch(e.which){
-		case 1:
-			break;
-		case 2:
-
-			break;
-		case 3:
-			rightButton = true;
-			mouseBufferX = mousePositionX;
-			mouseBufferY = mousePositionY;
-			break;
-	}
-	});
-	$(document).mouseup(function(e) {
-		switch(e.which){
-		case 1:
-			if (!mouseFlag)
-				raycast();
-			break;
-		case 2:
-
-			break;
-		case 3:
-			rightButton = false;
-			mouseBufferX = center[0];
-			mouseBufferY = center[1];
-			break;
-		}
-		mouseFlag = false;
+		mouse.x = ( mousePositionX / window.innerWidth ) * 2 - 1;
+		mouse.y = - ( mousePositionY / window.innerHeight ) * 2 + 1;
 	});
 	$(document).dblclick(function(e) {
 		switch(e.which){
@@ -393,6 +368,26 @@ function setUpControlListeners() {
 		}
 	});
 
+	$(document).mousedown(function(e) {
+	mouseFlag = false;
+	switch(e.which){
+		case 1:
+			break;
+		default:
+			break;
+		}
+	});
+	$(document).mouseup(function(e) {
+		switch(e.which){
+		case 1:
+			if (!mouseFlag)
+				raycast();
+			break;
+		default:
+			break;
+		}
+		mouseFlag = false;
+	});
 	$(document).keydown(function(e) {
 		switch(e.keyCode){
 			//to be changed into buttons
