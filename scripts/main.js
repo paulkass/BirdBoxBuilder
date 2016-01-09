@@ -22,6 +22,7 @@ var grassPlaneSize = 5*Math.pow(2, grassPlanePower);
 var grassPlaneExtension = 300;
 var grassMeshArray = [];
 
+var mouseFlag = false;
 var rightButton = false;
 var mouseBufferX = center[0];
 var mouseBufferY = center[1];
@@ -337,7 +338,10 @@ function raycast () {
 	}
 }
 
-var mouseFlag = false;
+function jumpCamera () {
+	camera.position.x = getPlacementSpot().x;
+	camera.position.z = getPlacementSpot().z;
+}
 
 function setUpControlListeners() {
 	$(document).mousemove(function(e) {
@@ -365,7 +369,7 @@ function setUpControlListeners() {
 	$(document).mouseup(function(e) {
 		switch(e.which){
 		case 1:
-			if (!mouseFlag) 
+			if (!mouseFlag)
 				raycast();
 			break;
 		case 2:
@@ -378,7 +382,16 @@ function setUpControlListeners() {
 			break;
 		}
 		mouseFlag = false;
-	});	
+	});
+	$(document).dblclick(function(e) {
+		switch(e.which){
+			case 1:
+				jumpCamera();
+				break;
+			default:
+				break;
+		}
+	});
 
 	$(document).keydown(function(e) {
 		switch(e.keyCode){
