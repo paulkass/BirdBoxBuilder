@@ -11,6 +11,7 @@ var WORLD_TO_RETICLE_SCALAR = 0.2;
 var WORLD_TO_PLANK_SCALAR = 10;
 var OBJECT_SOURCES_ARRAY = ["tree1.json", "tree2.json", "house.json"];
 var TYPES = ["tree", "plank", "house"];
+var ROTATION_UNIT = Math.PI/6;
 // ---------
 
 var center = [Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2)];
@@ -335,6 +336,29 @@ function raycast () {
 			
 			}
 		//};
+	}
+}
+
+function rotateSelectedObject(direction) {
+	var upVector = new THREE.Vector3(0,1,0);
+	var orthVector = new THREE.Vector3(1,0,0);
+	if (selectedObject!=0) {
+		switch (direction) {
+			case "up":
+				selectedObject.rotateOnAxis(orthVector, -ROTATION_UNIT);
+				break;
+			case "down":
+				selectedObject.rotateOnAxis(orthVector, ROTATION_UNIT);
+				break;
+			case "left":
+				selectedObject.rotateOnAxis(upVector, -ROTATION_UNIT);
+				break;
+			case "right":
+				selectedObject.rotateOnAxis(upVector, ROTATION_UNIT);
+				break;
+			default:
+				console.log("rotateSelectedObject:: unknown direction "+direction);
+		}
 	}
 }
 

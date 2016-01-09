@@ -48,8 +48,7 @@ function getClickFunctionForName(name) {
 			returnFunction = addPlank();
 			break;
 		case "house":
-			// TEMP FUNCTION: TO BE REMOVED LATER
-			returnFunction = lololol();
+			// nothing for now
 			break;
 		case "place": 
 			if(selectedObject) {
@@ -58,6 +57,18 @@ function getClickFunctionForName(name) {
 			break;
 		case "unselect":
 			unselectCurrentObject();
+			break;
+		case "rotate_object_up":
+			rotateSelectedObject("up");
+			break;
+		case "rotate_object_down":
+			rotateSelectedObject("down");
+			break;
+		case "rotate_object_left":
+			rotateSelectedObject("left");
+			break;
+		case "rotate_object_right":
+			rotateSelectedObject("right");
 			break;
 		default: 
 			// not implemented
@@ -103,6 +114,10 @@ function populateObjectsMenu() {
 	cellCount = 1;
 	addButtonToElement(document.getElementById("tab2_11"), "place");
 	addButtonToElement(document.getElementById("tab2_12"), "unselect");
+	addButtonToElement(document.getElementById("tab2_13"), "rotate_object_up");
+	addButtonToElement(document.getElementById("tab2_22"), "rotate_object_left");
+	addButtonToElement(document.getElementById("tab2_24"), "rotate_object_right");
+	addButtonToElement(document.getElementById("tab2_33"), "rotate_object_down");
 	
 }
 
