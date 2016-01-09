@@ -337,17 +337,20 @@ function raycast () {
 	}
 }
 
+var mouseFlag = false;
+
 function setUpControlListeners() {
 	$(document).mousemove(function(e) {
+		mouseFlag = true;
 		mousePositionX = e.pageX;
 		mousePositionY = e.pageY;
 		mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
 		mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;	
 	});
 	$("canvas").mousedown(function(e) {
+	mouseFlag = false;
 	switch(e.which){
 		case 1:
-			raycast();
 			break;
 		case 2:
 
@@ -362,6 +365,8 @@ function setUpControlListeners() {
 	$(document).mouseup(function(e) {
 		switch(e.which){
 		case 1:
+			if (!mouseFlag) 
+				raycast();
 			break;
 		case 2:
 
@@ -372,6 +377,7 @@ function setUpControlListeners() {
 			mouseBufferY = center[1];
 			break;
 		}
+		mouseFlag = false;
 	});	
 
 	$(document).keydown(function(e) {
