@@ -285,7 +285,7 @@ function render() {
 	if (gizmo != 0) {
 		gizmo.update();
 	}
-	//updateSelectedObjectAndCamera();
+	updateSelectedObjectAndCamera();
 //	gizmo.update();
 	stats.update();
 	requestAnimationFrame( render );
