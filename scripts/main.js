@@ -12,7 +12,7 @@ var WORLD_TO_PLANK_SCALAR = 10;
 var OBJECT_SOURCES_ARRAY = ["tree1.json", "tree2.json", "house.json"];
 var TYPES = ["tree", "plank", "house"];
 var ROTATION_UNIT = Math.PI/6;
-var INITIAL_PLANK_DIMENSIONS = [0.5,3,3] // [width, length, height]
+var INITIAL_PLANK_DIMENSIONS = [0.25,1.5,1.5] // [width, length, height]
 // ---------
 
 var center = [Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2)];
@@ -35,8 +35,8 @@ var objectIds = [];
 
 var objectIdCount = 1;
 
-var controls;
-var gizmo;
+var controls = {};
+var gizmo = 0;
 
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
@@ -277,6 +277,9 @@ function generateTexture() {
 			}
 
 function render() {
+	if (gizmo != 0) {
+		gizmo.update();
+	}
 	updateSelectedObjectAndCamera();
 //	gizmo.update();
 	requestAnimationFrame( render );
@@ -287,22 +290,22 @@ function updateSelectedObjectAndCamera() {
 	var cameraVector = camera.position.clone();
 	var worldVector = camera.getWorldDirection().clone().normalize();
 	updateReticle(cameraVector, worldVector);
-	switch (selectedObjectType) {
-		case "plank" :
-			var heldPosVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
-			selectedObject.position.set(heldPosVector.x, heldPosVector.y, heldPosVector.z);
-			camera.lookAt(selectedObject.position);
-			updateReticle(cameraVector, worldVector);
-			//selectedObject.lookAt(worldVector.add(cameraVector));
-			//gizmo.update();
-			break;
-		case "tree":
-			var placementVector = getPlacementSpot();
-			selectedObject = placeTreeAtVector(selectedObject, placementVector);
-			break;
-		default:
-			// do nothing for now
-	}
+	// switch (selectedObjectType) {
+// 		case "plank" :
+// 			var heldPosVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
+// 			//selectedObject.position.set(heldPosVector.x, heldPosVector.y, heldPosVector.z);
+// 			camera.lookAt(selectedObject.position);
+// 			updateReticle(cameraVector, worldVector);
+// 			//selectedObject.lookAt(worldVector.add(cameraVector));
+// 			//gizmo.update();
+// 			break;
+// 		case "tree":
+// 			var placementVector = getPlacementSpot();
+// 			//selectedObject = placeTreeAtVector(selectedObject, placementVector);
+// 			break;
+// 		default:
+// 			// do nothing for now
+// 	}
 }
 
 function updateReticle (cameraVector, worldVector) {
@@ -535,10 +538,20 @@ function addSelectedObject(obj, type, existing) {
 	});
 	if(!existing) {
 		for (var i=0; i<selectedObject.children.length; i++) {
-			selectedObject.children[i].name = "child_of_tree";
+			if (selectedObjectType == "tree") {
+				selectedObject.children[i].name = "child_of_tree";
+			}
 		}
 		console.log("Added an object with the name "+selectedObject.name);
-		scene.children.push(selectedObject);
+		// scene.children.push(selectedObject);
+// 		selectedObject.parent = scene;
+		scene.add(selectedObject);
+		//console.log(selectedObject.parent);
+		gizmo = new THREE.TransformControls( camera, renderer.domElement );
+		gizmo.setMode("translate");
+		gizmo.addEventListener( 'objectChange', render );
+		gizmo.attach(scene.getObjectByName(selectedObject.name));
+		scene.add(gizmo);
 	}
 
 }
@@ -578,6 +591,8 @@ function restoreCurrentObject(oldMatrix) {
 }
 
 function clearSelectedObject(remove, disableMenu) {
+	gizmo.detach();
+	gizmo = 0;
 	if(disableMenu)
 		disableSelectedObjectMenu();
 //	scene.remove(gizmo);
