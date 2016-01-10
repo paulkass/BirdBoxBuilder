@@ -313,7 +313,7 @@ function updateSelectedObjectAndCamera() {
 // 		default:
 // 			// do nothing for now
 // 	}
-// }
+}
 
 function updateReticle (cameraVector, worldVector) {
 	var reticleVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_RETICLE_SCALAR));
