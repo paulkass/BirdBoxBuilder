@@ -189,6 +189,11 @@ function init() {
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
 	
+	stats = new Stats();
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.top = '100px';
+	document.body.appendChild( stats.domElement );
+	
 	controls = new THREE.OrbitControls( camera, renderer.domElement );
 	controls.enableDamping = false;
 	controls.enableZoom = true;
@@ -282,30 +287,32 @@ function render() {
 	}
 	updateSelectedObjectAndCamera();
 //	gizmo.update();
+	stats.update();
 	requestAnimationFrame( render );
 	renderer.render( scene, camera );
+	//render();
 }
 
 function updateSelectedObjectAndCamera() {
 	var cameraVector = camera.position.clone();
 	var worldVector = camera.getWorldDirection().clone().normalize();
 	updateReticle(cameraVector, worldVector);
-	// switch (selectedObjectType) {
-// 		case "plank" :
-// 			var heldPosVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
-// 			//selectedObject.position.set(heldPosVector.x, heldPosVector.y, heldPosVector.z);
-// 			camera.lookAt(selectedObject.position);
-// 			updateReticle(cameraVector, worldVector);
-// 			//selectedObject.lookAt(worldVector.add(cameraVector));
-// 			//gizmo.update();
-// 			break;
-// 		case "tree":
-// 			var placementVector = getPlacementSpot();
-// 			//selectedObject = placeTreeAtVector(selectedObject, placementVector);
-// 			break;
-// 		default:
-// 			// do nothing for now
-// 	}
+	switch (selectedObjectType) {
+		case "plank" :
+			var heldPosVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
+			//selectedObject.position.set(heldPosVector.x, heldPosVector.y, heldPosVector.z);
+			camera.lookAt(selectedObject.position);
+			updateReticle(cameraVector, worldVector);
+			//selectedObject.lookAt(worldVector.add(cameraVector));
+			//gizmo.update();
+			break;
+		case "tree":
+			var placementVector = getPlacementSpot();
+			//selectedObject = placeTreeAtVector(selectedObject, placementVector);
+			break;
+		default:
+			// do nothing for now
+	}
 }
 
 function updateReticle (cameraVector, worldVector) {
