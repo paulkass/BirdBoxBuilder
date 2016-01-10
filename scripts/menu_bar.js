@@ -58,17 +58,27 @@ function getClickFunctionForName(name) {
 		case "unselect":
 			unselectCurrentObject();
 			break;
-		case "rotate_object_up":
-			rotateSelectedObject("up");
+		case "toggle_space":
+			gizmo.setSpace( gizmo.space === "local" ? "world" : "local" );
 			break;
-		case "rotate_object_down":
-			rotateSelectedObject("down");
+		case "snap_to_grid":
+			gizmo.setTranslationSnap(1);
+			gizmo.setRotationSnap( THREE.Math.degToRad( 15 ) );
 			break;
-		case "rotate_object_left":
-			rotateSelectedObject("left");
+		case "translate":
+			gizmo.setMode( "translate" );
 			break;
-		case "rotate_object_right":
-			rotateSelectedObject("right");
+		case "rotate":
+			gizmo.setMode( "rotate" );
+			break;
+		case "scale":
+			gizmo.setMode( "scale" );
+			break;
+		case "zoom_in":
+			gizmo.setSize( gizmo.size + 0.1 );
+			break;
+		case "zoom_out":
+			gizmo.setSize( Math.max( gizmo.size - 0.1, 0.1 ) );
 			break;
 		default: 
 			// not implemented
@@ -114,10 +124,13 @@ function populateObjectsMenu() {
 	cellCount = 1;
 	addButtonToElement(document.getElementById("tab2_11"), "place");
 	addButtonToElement(document.getElementById("tab2_12"), "unselect");
-	addButtonToElement(document.getElementById("tab2_13"), "rotate_object_up");
-	addButtonToElement(document.getElementById("tab2_22"), "rotate_object_left");
-	addButtonToElement(document.getElementById("tab2_24"), "rotate_object_right");
-	addButtonToElement(document.getElementById("tab2_33"), "rotate_object_down");
+	addButtonToElement(document.getElementById("tab2_21"), "toggle_space");
+	addButtonToElement(document.getElementById("tab2_22"), "snap_to_grid");
+	addButtonToElement(document.getElementById("tab2_23"), "translate");
+	addButtonToElement(document.getElementById("tab2_24"), "rotate");
+	addButtonToElement(document.getElementById("tab2_31"), "scale");
+	addButtonToElement(document.getElementById("tab2_32"), "zoom_in");
+	addButtonToElement(document.getElementById("tab2_33"), "zoom_out");
 	
 }
 

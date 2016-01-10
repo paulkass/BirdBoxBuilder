@@ -423,34 +423,33 @@ function setUpControlListeners() {
 		switch(e.keyCode){
 			//to be changed into buttons
 			case 81: // Q
-				gizmo.setSpace( gizmo.space === "local" ? "world" : "local" );
+				
 				break;
 
 			case 17: // Ctrl
-				gizmo.setTranslationSnap(1);
-				gizmo.setRotationSnap( THREE.Math.degToRad( 15 ) );
+				
 				break;
 
 			case 87: // W
-				gizmo.setMode( "translate" );
+				
 				break;
 
 			case 69: // E
-				gizmo.setMode( "rotate" );
+				
 				break;
 
 			case 82: // R
-				gizmo.setMode( "scale" );
+				
 				break;
 
 			case 187:
 			case 107: // +, =, num+
-				gizmo.setSize( gizmo.size + 0.1 );
+				
 				break;
 
 			case 189:
 			case 109: // -, _, num-
-				gizmo.setSize( Math.max( gizmo.size - 0.1, 0.1 ) );
+				
 				break;
 				
 			default:
