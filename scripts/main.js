@@ -285,7 +285,7 @@ function render() {
 	if (gizmo != 0) {
 		gizmo.update();
 	}
-	updateSelectedObjectAndCamera();
+	//updateSelectedObjectAndCamera();
 //	gizmo.update();
 	stats.update();
 	requestAnimationFrame( render );
@@ -300,7 +300,7 @@ function updateSelectedObjectAndCamera() {
 	switch (selectedObjectType) {
 		case "plank" :
 			var heldPosVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
-			//selectedObject.position.set(heldPosVector.x, heldPosVector.y, heldPosVector.z);
+			selectedObject.position.set(heldPosVector.x, heldPosVector.y, heldPosVector.z);
 			camera.lookAt(selectedObject.position);
 			updateReticle(cameraVector, worldVector);
 			//selectedObject.lookAt(worldVector.add(cameraVector));
@@ -308,7 +308,7 @@ function updateSelectedObjectAndCamera() {
 			break;
 		case "tree":
 			var placementVector = getPlacementSpot();
-			//selectedObject = placeTreeAtVector(selectedObject, placementVector);
+			selectedObject = placeTreeAtVector(selectedObject, placementVector);
 			break;
 		default:
 			// do nothing for now
@@ -556,7 +556,7 @@ function addSelectedObject(obj, type, existing) {
 		//console.log(selectedObject.parent);
 		gizmo = new THREE.TransformControls( camera, renderer.domElement );
 		gizmo.setMode("translate");
-		gizmo.addEventListener( 'objectChange', render );
+		//gizmo.addEventListener( 'objectChange', render );
 		gizmo.attach(scene.getObjectByName(selectedObject.name));
 		scene.add(gizmo);
 	}
