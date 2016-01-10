@@ -901,8 +901,6 @@
 
 			event.preventDefault();
 			event.stopPropagation();
-			
-			//console.log("In the event");
 
 			point.copy( planeIntersect.point );
 
@@ -911,12 +909,10 @@
 				point.sub( offset );
 				point.multiply( parentScale );
 
-
 				if ( scope.space === "local" ) {
 
 					point.applyMatrix4( tempMatrix.getInverse( worldRotationMatrix ) );
 					
-
 					if ( scope.axis.search( "X" ) === - 1 ) point.x = 0;
 					if ( scope.axis.search( "Y" ) === - 1 ) point.y = 0;
 					if ( scope.axis.search( "Z" ) === - 1 ) point.z = 0;

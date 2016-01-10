@@ -198,8 +198,8 @@ function init() {
 	controls.enableDamping = false;
 	controls.enableZoom = true;
 
-//	gizmo = new THREE.TransformControls(camera, renderer.domElement);
-//	gizmo.addEventListener('objectChange', render);
+	gizmo = new THREE.TransformControls(camera, renderer.domElement);
+	gizmo.setMode("translate");
 
 	var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 	scene.add(light);
@@ -282,37 +282,33 @@ function generateTexture() {
 			}
 
 function render() {
-	if (gizmo != 0) {
-		gizmo.update();
-	}
 	updateSelectedObjectAndCamera();
-//	gizmo.update();
 	stats.update();
 	requestAnimationFrame( render );
 	renderer.render( scene, camera );
-	//render();
 }
 
 function updateSelectedObjectAndCamera() {
 	var cameraVector = camera.position.clone();
 	var worldVector = camera.getWorldDirection().clone().normalize();
 	updateReticle(cameraVector, worldVector);
-	// switch (selectedObjectType) {
-// 		case "plank" :
-// 			var heldPosVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
+	 switch (selectedObjectType) {
+		case "plank" :
+ //			var heldPosVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
 // 			selectedObject.position.set(heldPosVector.x, heldPosVector.y, heldPosVector.z);
 // 			camera.lookAt(selectedObject.position);
 // 			updateReticle(cameraVector, worldVector);
-// 			//selectedObject.lookAt(worldVector.add(cameraVector));
-// 			//gizmo.update();
-// 			break;
-// 		case "tree":
-// 			var placementVector = getPlacementSpot();
-// 			selectedObject = placeTreeAtVector(selectedObject, placementVector);
-// 			break;
-// 		default:
+// 			selectedObject.lookAt(worldVector.add(cameraVector));
+// 			selectedObject.updateMatrix();
+			gizmo.update();
+ 			break;
+ 		case "tree":
+			var placementVector = getPlacementSpot();
+ 			selectedObject = placeTreeAtVector(selectedObject, placementVector);
+ 			break;
+ 		default:
 // 			// do nothing for now
-// 	}
+ 	}
 }
 
 function updateReticle (cameraVector, worldVector) {
@@ -427,40 +423,48 @@ function setUpControlListeners() {
 		switch(e.keyCode){
 			//to be changed into buttons
 			case 81: // Q
-//				gizmo.setSpace( gizmo.space === "local" ? "world" : "local" );
+				gizmo.setSpace( gizmo.space === "local" ? "world" : "local" );
 				break;
 
 			case 17: // Ctrl
-//				gizmo.setTranslationSnap( 100 );
-//				gizmo.setRotationSnap( THREE.Math.degToRad( 15 ) );
+				gizmo.setTranslationSnap(1);
+				gizmo.setRotationSnap( THREE.Math.degToRad( 15 ) );
 				break;
 
 			case 87: // W
-//				gizmo.setMode( "translate" );
+				gizmo.setMode( "translate" );
 				break;
 
 			case 69: // E
-//				gizmo.setMode( "rotate" );
+				gizmo.setMode( "rotate" );
 				break;
 
 			case 82: // R
-//				gizmo.setMode( "scale" );
+				gizmo.setMode( "scale" );
 				break;
 
 			case 187:
 			case 107: // +, =, num+
-//				gizmo.setSize( gizmo.size + 0.1 );
+				gizmo.setSize( gizmo.size + 0.1 );
 				break;
 
 			case 189:
 			case 109: // -, _, num-
-//				gizmo.setSize( Math.max( gizmo.size - 0.1, 0.1 ) );
+				gizmo.setSize( Math.max( gizmo.size - 0.1, 0.1 ) );
 				break;
 				
 			default:
 				//alert(e.keyCode);
 		}
 	});
+	$(document).keyup(function(e) {
+		switch(e.keyCode){
+			case 17: // Ctrl
+				gizmo.setTranslationSnap(null);
+				gizmo.setRotationSnap(null);
+				break;
+		}
+	});	
 }
 
 function getPlacementSpot() {
@@ -532,8 +536,8 @@ function addSelectedObject(obj, type, existing) {
 		selectedObject.name = type+""+getObjectIdCount();
 	}
 	if (type=="plank") {
-//		gizmo.attach(obj);
-//		scene.add(gizmo);
+		gizmo.attach(obj);
+		scene.add(gizmo);
 	}
 	selectedObject.traverse(function (child) {
     	if ( child instanceof THREE.Mesh ) {
@@ -554,11 +558,6 @@ function addSelectedObject(obj, type, existing) {
 // 		selectedObject.parent = scene;
 		scene.add(selectedObject);
 		//console.log(selectedObject.parent);
-		gizmo = new THREE.TransformControls( camera, renderer.domElement );
-		gizmo.setMode("translate");
-		//gizmo.addEventListener( 'objectChange', render );
-		gizmo.attach(scene.getObjectByName(selectedObject.name));
-		scene.add(gizmo);
 	}
 
 }
@@ -598,12 +597,12 @@ function restoreCurrentObject(oldMatrix) {
 }
 
 function clearSelectedObject(remove, disableMenu) {
-	gizmo.detach();
-	gizmo = 0;
 	if(disableMenu)
 		disableSelectedObjectMenu();
-//	scene.remove(gizmo);
-//	gizmo.detach(selectedObject);
+	if(selectedObjectType == "plank") {
+		gizmo.detach();
+		scene.remove(gizmo);
+	}
 	if(remove)
 		scene.remove(selectedObject);
 	wireframeArray.forEach(function (w) {
