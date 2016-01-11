@@ -26,7 +26,7 @@ var grassMeshArray = [];
 
 var tracerLines = [];
 var tracerLineMaterial = new THREE.LineDashedMaterial({
-	color: 0x000000,
+	color: 0x0000ff,
 	linewidth: 2,
 	dashSize: 1,
 	gapSize: 0.5
@@ -65,7 +65,7 @@ var selectedObjectType = ""; // empty string when there is no object to be used
 var wireframeArray = [];
 
 var wireframeMaterial = new THREE.MeshBasicMaterial({
-    color: 0x0000ff,
+    color: 0xff0000,
     wireframe: true,
     transparent: false
 });
@@ -546,6 +546,10 @@ function addSelectedObject(obj, type, existing) {
 	}
 	selectedObject = obj;
 	selectedObjectType = type;
+	var cameraVector = camera.position.clone();
+	var worldVector = camera.getWorldDirection().clone().normalize();
+	var heldPosVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
+	selectedObject.position.set(heldPosVector.x, heldPosVector.y, heldPosVector.z);
 	if(!existing) {
 		selectedObject.name = type+""+getObjectIdCount();
 	}
