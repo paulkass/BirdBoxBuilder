@@ -370,15 +370,36 @@ function rotateSelectedObject(direction) {
 }
 
 function jumpCamera () {
-	raycaster.setFromCamera(mouse,camera);
-	var intersects = raycaster.intersectObject(scene.getObjectByName("plane"), true);
-	if(intersects.length) {
-		camera.translateX(intersects[0].point.clone().x -camera.position.x);
-		camera.translateZ(intersects[0].point.clone().z -camera.position.z);
-		camera.updateMatrix();
-		controls.update();
-	}
-
+	// raycaster.setFromCamera(mouse,camera);
+// 	var intersects = raycaster.intersectObject(scene.getObjectByName("plane"), true);
+// 	if(intersects.length) {
+// 		camera.translateX(intersects[0].point.clone().x -camera.position.x);
+// 		camera.translateZ(intersects[0].point.clone().z -camera.position.z);
+// 		camera.updateMatrix();
+// 		controls.update();
+// 	}
+	//controls = 0;
+	var cameraPosition = camera.position.clone();
+	var placeVector = getPlacementSpot();
+	placeVector.setY(camera.position.y);
+	camera.position.copy(placeVector.clone());
+	//console.log(JSON.stringify(cameraPosition));
+	camera.lookAt(cameraPosition);
+	
+	controls.replaceConstraint(camera);
+	
+	//controls.reset();
+	
+	// controls = new THREE.OrbitControls( camera, renderer.domElement );
+// 	controls.enableDamping = false;
+// 	controls.enableZoom = true;
+	//controls.target = cameraPosition;
+	//controls.setTarget(cameraPosition);
+	//controls.updateOffset(new THREE.Vector3(0,1,0));
+// 	controls.setTarget(cameraPosition.clone());
+// 	controls.update();
+	//controls.updateOffset(camera.position.clone());
+	//console.log("Offset: "+JSON.stringify(controls.offset));
 }
 
 function setUpControlListeners() {

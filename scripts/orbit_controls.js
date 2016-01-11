@@ -325,6 +325,10 @@
 			}
 
 		} );
+		
+		this.replaceConstraint = function (newObject) {
+			constraint = new OrbitConstraint(newObject);	
+		};
 
 		this.getPolarAngle = function () {
 
