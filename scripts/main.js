@@ -74,6 +74,19 @@ var loadCount = 0;
 
 //  **********************
 
+function onWindowResize() {
+
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+	
+	center = [Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2)];
+
+	renderer.setSize( window.innerWidth, window.innerHeight );
+
+	render();
+
+}
+
 function loadPromiseFunction(resolve2, reject2) {
 	var length = OBJECT_SOURCES_ARRAY.length;
 	if (loadCount<length) {	
@@ -189,7 +202,6 @@ function init() {
 
 	camera.position.y=3;
 	camera.position.z=5;
-	//camera.lookAt(new THREE.Vector3(0,0,0));
 	camera.lookAtVector = new THREE.Vector3(0,0,0);
 
 	renderer = new THREE.WebGLRenderer();
@@ -206,6 +218,8 @@ function init() {
 	controls = new THREE.OrbitControls( camera, renderer.domElement );
 	controls.enableDamping = false;
 	controls.enableZoom = true;
+	
+	window.addEventListener( 'resize', onWindowResize, false );
 
 	gizmo = new THREE.TransformControls(camera, renderer.domElement);
 	gizmo.setMode("translate");
@@ -237,8 +251,8 @@ function init() {
 	var axisHelper = new THREE.AxisHelper( 5 );
 	scene.add(axisHelper);
 
-// 	scene.fog = new THREE.FogExp2( 0x000000, 0.0128 );
-// 	renderer.setClearColor( scene.fog.color, 1 );
+	scene.fog = new THREE.FogExp2( 0x000000, 0.0128 );
+	renderer.setClearColor( scene.fog.color, 1 );
 
 	var userReticleMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
 	var userReticleGeometry = new THREE.SphereGeometry(RETICLE_RADIUS, 100);
@@ -572,19 +586,13 @@ function addSelectedObject(obj, type, existing) {
 			}
 		}
 		console.log("Added an object with the name "+selectedObject.name);
-		// scene.children.push(selectedObject);
-// 		selectedObject.parent = scene;
 		scene.add(selectedObject);
-		//console.log(selectedObject.parent);
+	}
+	
+	for (var i=1; i<=3; i++) {
+		tracerLines.push(new THREE.Line(getTracerGeometry(i), tracerLineMaterial));
 	}
 
-	console.log(JSON.stringify(selectedObject.position));	
-	tracerLines.push(new THREE.Line(getTracerGeometry(1), tracerLineMaterial));
-		
-	tracerLines.push(new THREE.Line(getTracerGeometry(2), tracerLineMaterial));
-		
-	tracerLines.push(new THREE.Line(getTracerGeometry(3), tracerLineMaterial));	
-	
 	tracerLines.forEach(function(l) {
 		scene.add(l);
 	});
