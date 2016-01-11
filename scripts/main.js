@@ -378,7 +378,7 @@ function jumpCamera () {
 // 		camera.updateMatrix();
 // 		controls.update();
 // 	}
-	controls = 0;
+	//controls = 0;
 	var cameraPosition = camera.position.clone();
 	var placeVector = getPlacementSpot();
 	placeVector.setY(camera.position.y);
@@ -386,9 +386,9 @@ function jumpCamera () {
 	//console.log(JSON.stringify(cameraPosition));
 	camera.lookAt(cameraPosition);
 	
-	controls = new THREE.OrbitControls( camera, renderer.domElement );
-	controls.enableDamping = false;
-	controls.enableZoom = true;
+	// controls = new THREE.OrbitControls( camera, renderer.domElement );
+// 	controls.enableDamping = false;
+// 	controls.enableZoom = true;
 	//controls.target = cameraPosition;
 	//controls.setTarget(cameraPosition);
 	//controls.updateOffset(new THREE.Vector3(0,1,0));

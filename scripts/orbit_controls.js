@@ -14,11 +14,10 @@
 	function OrbitConstraint ( object ) {
 
 		this.object = object;
-		
-		this.offset = new THREE.Vector3();
 
 		// "target" sets the location of focus, where the object orbits around
 		// and where it pans with respect to.
+		//this.target = object.position.clone().add(object.getWorldDirection());
 		this.target = new THREE.Vector3();
 
 		// Limits to how far you can dolly in and out ( PerspectiveCamera only )
@@ -198,23 +197,21 @@
 			}
 
 		};
-		
-
-		// so camera.up is the orbit axis
-		var quat = new THREE.Quaternion().setFromUnitVectors( object.up, new THREE.Vector3( 0, 1, 0 ) );
-		var quatInverse = quat.clone().inverse();
-
-		var lastPosition = new THREE.Vector3();
-		var lastQuaternion = new THREE.Quaternion();
 
 		this.update = function() {
+
+			var offset = new THREE.Vector3();
+
+			// so camera.up is the orbit axis
+			var quat = new THREE.Quaternion().setFromUnitVectors( object.up, new THREE.Vector3( 0, 1, 0 ) );
+			var quatInverse = quat.clone().inverse();
+
+			var lastPosition = new THREE.Vector3();
+			var lastQuaternion = new THREE.Quaternion();
 
 			return function () {
 
 				var position = this.object.position;
-				//console.log(JSON.stringify(position));
-				var offset = this.offset;
-				//console.log("Target: "+JSON.stringify(this.target));
 
 				offset.copy( position ).sub( this.target );
 
@@ -258,7 +255,7 @@
 
 				position.copy( this.target ).add( offset );
 
-				//this.object.lookAt( this.target );
+				this.object.lookAt( this.target );
 
 				if ( this.enableDamping === true ) {
 
@@ -286,8 +283,6 @@
 					lastPosition.copy( this.object.position );
 					lastQuaternion.copy( this.object.quaternion );
 					zoomChanged = false;
-					
-					//console.log(JSON.stringify(offset));
 
 					return true;
 
@@ -313,6 +308,9 @@
 	THREE.OrbitControls = function ( object, domElement ) {
 
 		var constraint = new OrbitConstraint( object );
+		
+		//constraint.target = object.getWorldDirection().clone();
+		//this.target = constraint.target;
 
 		this.domElement = ( domElement !== undefined ) ? domElement : document;
 
@@ -327,14 +325,6 @@
 			}
 
 		} );
-		
-		this.updateOffset = function (vector) {
-			this.offset = vector.clone();
-		}
-
-		this.setTarget = function(vector) {
-			this.target = vector.clone();
-		}
 
 		this.getPolarAngle = function () {
 
@@ -849,9 +839,8 @@
 
 			set: function ( value ) {
 
-				//console.warn( 'THREE.OrbitControls: target is now immutable. Use target.set() instead.' );
-				this.constraint.target.copy(value);
-				//console.log(JSON.stringify(this.constraint.target));
+				console.warn( 'THREE.OrbitControls: target is now immutable. Use target.set() instead.' );
+				this.constraint.target.copy( value );
 
 			}
 
