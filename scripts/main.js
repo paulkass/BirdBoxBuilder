@@ -24,6 +24,14 @@ var grassPlaneSize = 5*Math.pow(2, grassPlanePower);
 var grassPlaneExtension = 300;
 var grassMeshArray = [];
 
+var tracerLines = [];
+var tracerLineMaterial = new THREE.LineDashedMaterial({
+	color: 0x000000,
+	linewidth: 2,
+	dashSize: 1,
+	gapSize: 0.5
+});
+
 var mouseFlag = false;
 var rightButton = false;
 var mouseBufferX = center[0];
@@ -57,7 +65,7 @@ var selectedObjectType = ""; // empty string when there is no object to be used
 var wireframeArray = [];
 
 var wireframeMaterial = new THREE.MeshBasicMaterial({
-    color: 0xff0000,
+    color: 0x0000ff,
     wireframe: true,
     transparent: false
 });
@@ -295,11 +303,11 @@ function updateSelectedObjectAndCamera() {
 	updateReticle(cameraVector, worldVector);
 	 switch (selectedObjectType) {
 		case "plank" :
- //			var heldPosVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
-// 			selectedObject.position.set(heldPosVector.x, heldPosVector.y, heldPosVector.z);
+ 			// var heldPosVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
+// 			//selectedObject.position.set(heldPosVector.x, heldPosVector.y, heldPosVector.z);
 // 			camera.lookAt(selectedObject.position);
 // 			updateReticle(cameraVector, worldVector);
-// 			selectedObject.lookAt(worldVector.add(cameraVector));
+// 			//selectedObject.lookAt(worldVector.add(cameraVector));
 // 			selectedObject.updateMatrix();
 			gizmo.update();
  			break;
@@ -309,6 +317,12 @@ function updateSelectedObjectAndCamera() {
  			break;
  		default:
 // 			// do nothing for now
+ 	}
+ 	
+ 	if (tracerLines.length != 0) {
+ 		tracerLines[0].geometry = getTracerGeometry(1);
+ 		tracerLines[1].geometry = getTracerGeometry(2);
+ 		tracerLines[2].geometry = getTracerGeometry(3);
  	}
 }
 
@@ -371,15 +385,6 @@ function rotateSelectedObject(direction) {
 }
 
 function jumpCamera () {
-	// raycaster.setFromCamera(mouse,camera);
-// 	var intersects = raycaster.intersectObject(scene.getObjectByName("plane"), true);
-// 	if(intersects.length) {
-// 		camera.translateX(intersects[0].point.clone().x -camera.position.x);
-// 		camera.translateZ(intersects[0].point.clone().z -camera.position.z);
-// 		camera.updateMatrix();
-// 		controls.update();
-// 	}
-	//controls = 0;
 	var cameraPosition = camera.position.clone();
 	var placeVector = getPlacementSpot();
 	placeVector.setY(camera.position.y);
@@ -389,19 +394,6 @@ function jumpCamera () {
 	camera.lookAtVector=cameraPosition.clone();
 	
 	controls.replaceConstraint(camera);
-	
-	//controls.reset();
-	
-	// controls = new THREE.OrbitControls( camera, renderer.domElement );
-// 	controls.enableDamping = false;
-// 	controls.enableZoom = true;
-	//controls.target = cameraPosition;
-	//controls.setTarget(cameraPosition);
-	//controls.updateOffset(new THREE.Vector3(0,1,0));
-// 	controls.setTarget(cameraPosition.clone());
-// 	controls.update();
-	//controls.updateOffset(camera.position.clone());
-	//console.log("Offset: "+JSON.stringify(controls.offset));
 }
 
 function setUpControlListeners() {
@@ -582,6 +574,51 @@ function addSelectedObject(obj, type, existing) {
 		//console.log(selectedObject.parent);
 	}
 
+	console.log(JSON.stringify(selectedObject.position));	
+	tracerLines.push(new THREE.Line(getTracerGeometry(1), tracerLineMaterial));
+		
+	tracerLines.push(new THREE.Line(getTracerGeometry(2), tracerLineMaterial));
+		
+	tracerLines.push(new THREE.Line(getTracerGeometry(3), tracerLineMaterial));	
+	
+	tracerLines.forEach(function(l) {
+		scene.add(l);
+	});
+}
+
+function getTracerGeometry(index) {
+	var returnGeometry = new THREE.Geometry();
+	if (selectedObject != 0) {
+	switch (index) {
+		case 1:
+			var firstTracerGeometry = new THREE.Geometry();
+			firstTracerGeometry.vertices.push(
+				new THREE.Vector3(selectedObject.position.x, 0,0),
+				new THREE.Vector3(selectedObject.position.x, 0, selectedObject.position.z)
+			);
+			returnGeometry = firstTracerGeometry.clone();
+			break;
+		case 2:
+			var secondTracerGeometry = new THREE.Geometry(); 
+			secondTracerGeometry.vertices.push(
+				new THREE.Vector3(0,0,selectedObject.position.z),
+				new THREE.Vector3(selectedObject.position.x, 0, selectedObject.position.z)
+			);
+			returnGeometry = secondTracerGeometry.clone();
+			break;
+		case 3:
+			var thirdTracerGeometry = new THREE.Geometry();
+			thirdTracerGeometry.vertices.push(
+				new THREE.Vector3(selectedObject.position.x, 0, selectedObject.position.z),
+				selectedObject.position.clone()
+			);
+			returnGeometry = thirdTracerGeometry.clone();
+			break;
+		default:
+			//return an empty geometry
+	}
+	}
+	return returnGeometry;
 }
 
 function unselectCurrentObject() {
@@ -619,6 +656,10 @@ function restoreCurrentObject(oldMatrix) {
 }
 
 function clearSelectedObject(remove, disableMenu) {
+	tracerLines.forEach(function (v) {
+		scene.remove(v);
+	});
+	tracerLines = [];
 	if(disableMenu)
 		disableSelectedObjectMenu();
 	if(selectedObjectType == "plank") {
