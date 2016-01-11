@@ -386,6 +386,10 @@ function jumpCamera () {
 	//console.log(JSON.stringify(cameraPosition));
 	camera.lookAt(cameraPosition);
 	
+	controls.replaceConstraint(camera);
+	
+	//controls.reset();
+	
 	// controls = new THREE.OrbitControls( camera, renderer.domElement );
 // 	controls.enableDamping = false;
 // 	controls.enableZoom = true;
