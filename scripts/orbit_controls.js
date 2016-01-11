@@ -17,6 +17,7 @@
 
 		// "target" sets the location of focus, where the object orbits around
 		// and where it pans with respect to.
+		//this.target = object.position.clone().add(object.getWorldDirection());
 		this.target = new THREE.Vector3();
 
 		// Limits to how far you can dolly in and out ( PerspectiveCamera only )
@@ -307,6 +308,9 @@
 	THREE.OrbitControls = function ( object, domElement ) {
 
 		var constraint = new OrbitConstraint( object );
+		
+		//constraint.target = object.getWorldDirection().clone();
+		//this.target = constraint.target;
 
 		this.domElement = ( domElement !== undefined ) ? domElement : document;
 
