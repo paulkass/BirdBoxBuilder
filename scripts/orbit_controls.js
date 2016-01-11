@@ -17,8 +17,9 @@
 
 		// "target" sets the location of focus, where the object orbits around
 		// and where it pans with respect to.
-		//this.target = object.position.clone().add(object.getWorldDirection());
-		this.target = new THREE.Vector3();
+		//this.lookAtVector = this.object.position.clone().add(this.object.getWorldDirection());
+		//this.target = new THREE.Vector3();
+		this.target = this.object.lookAtVector;
 
 		// Limits to how far you can dolly in and out ( PerspectiveCamera only )
 		this.minDistance = 0;

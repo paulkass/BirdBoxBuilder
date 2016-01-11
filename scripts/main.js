@@ -181,7 +181,8 @@ function init() {
 
 	camera.position.y=3;
 	camera.position.z=5;
-	camera.lookAt(new THREE.Vector3(0,0,0));
+	//camera.lookAt(new THREE.Vector3(0,0,0));
+	camera.lookAtVector = new THREE.Vector3(0,0,0);
 
 	renderer = new THREE.WebGLRenderer();
 	renderer.setClearColor( 0x003300 );
@@ -385,6 +386,7 @@ function jumpCamera () {
 	camera.position.copy(placeVector.clone());
 	//console.log(JSON.stringify(cameraPosition));
 	camera.lookAt(cameraPosition);
+	camera.lookAtVector=cameraPosition.clone();
 	
 	controls.replaceConstraint(camera);
 	
