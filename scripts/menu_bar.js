@@ -42,54 +42,77 @@ function getClickFunctionForName(name) {
 	var returnFunction = function() {};
 	switch (name) {
 		case "tree1":
-			returnFunction = addTree("tree1");
+			returnFunction = function() {addTree("tree1");};
 			break;
 		case "tree2":
-			returnFunction = addTree("tree2");
+			returnFunction = function() {addTree("tree2");};
 			break;
 		case "plank":
-			returnFunction = addPlank();
+			returnFunction = function() {addPlank();};
 			break;
 		case "house":
 			// nothing for now
 			break;
+		case "bird_hole_plank":
+			returnFunction = function() {addBirdHolePlank();};
+			break;
 		case "place": 
-			if(selectedObject) {
-				addObjectToScene();
-			}
+			returnFunction = function() {
+				if(selectedObject) {
+					addObjectToScene();
+				}
+			};
 			break;
 		case "unselect":
-			unselectCurrentObject();
+			returnFunction = function() {
+				unselectCurrentObject();
+			};
 			break;
 		case "toggle_space":
-			gizmo.setSpace( gizmo.space === "local" ? "world" : "local" );
+			returnFunction = function() {
+				gizmo.setSpace( gizmo.space === "local" ? "world" : "local" );
+			};
 			break;
 		case "snap_to_grid":
-			snap ? gizmo.setTranslationSnap(null) : gizmo.setTranslationSnap(1);
-			snap ? gizmo.setRotationSnap(null) : gizmo.setRotationSnap( WORLD_ROTATION_SNAP );
-			snap = !snap;
+			returnFunction = function() {
+				snap ? gizmo.setTranslationSnap(null) : gizmo.setTranslationSnap(1);
+				snap ? gizmo.setRotationSnap(null) : gizmo.setRotationSnap( WORLD_ROTATION_SNAP );
+				snap = !snap;
+			};
 			break;
 		case "translate":
-			gizmo.setMode( "translate" );
+			returnFunction = function() {
+				gizmo.setMode( "translate" );
+			};
 			break;
 		case "rotate":
-			gizmo.setMode( "rotate" );
+			returnFunction = function() {
+				gizmo.setMode( "rotate" );
+			};
 			break;
 		case "scale":
-			gizmo.setMode( "scale" );
+			returnFunction = function() {
+				gizmo.setMode( "scale" );
+			};
 			break;
 		case "zoom_in":
-			gizmo.setSize( gizmo.size + 0.1 );
+			returnFunction = function() {
+				gizmo.setSize( gizmo.size + 0.1 );
+			};
 			break;
 		case "zoom_out":
-			gizmo.setSize( Math.max( gizmo.size - 0.1, 0.1 ) );
+			returnFunction = function() {
+				gizmo.setSize( Math.max( gizmo.size - 0.1, 0.1 ) );
+			};
 			break;
 		case "camera_follows_object":
+			returnFunction = function() {
 				if (cameraFollowsObjectFlag) {
 					cameraFollowsObjectFlag = false;
 				} else {
 					cameraFollowsObjectFlag = true;
 				}
+			};
 			break;
 		default: 
 			// not implemented
@@ -150,7 +173,7 @@ function addButtonToElement(parent, childName) {
 	var objectDiv = document.createElement("BUTTON");
 	objectDiv.setAttribute("id", childName);
 	objectDiv.setAttribute("class", "btn btn-success");
-	objectDiv.onclick = function () { var x = getClickFunctionForName(childName); };
+	objectDiv.onclick = function () { var x = getClickFunctionForName(childName); x();};
 	var childText = names.getName(childName);
 	objectDiv.appendChild(document.createTextNode(childText));
 	objectDiv.setAttribute("style", "font-family: 'Dancing Script', cursive;");

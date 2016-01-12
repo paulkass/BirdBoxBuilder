@@ -573,9 +573,13 @@ function addPlank () {
 	addSelectedObject(plank, "plank", false);
 }
 
+function addBirdHolePlank() {
+	console.log("Adding a Bird Hole Plank.");
+}
+
 function addTree (type) {
 	var tree = getTree(type);
-	console.log("Adding a tree");
+	console.log("Adding a tree.");
 	addSelectedObject(tree, "tree", false);
 }
 
