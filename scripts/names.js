@@ -13,7 +13,8 @@ var Names = function() {
 		"rotate": "Set rotation Mode",
 		"scale": "Set Scaling Mode",
 		"zoom_in": "Enlarge Gizmo",
-		"zoom_out": "Shrink Gizmo"
+		"zoom_out": "Shrink Gizmo",
+		"camera_follows_object": "Camera Follows the Selected Object"
 	}
 	
 	this.getName = function(value) {

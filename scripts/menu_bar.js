@@ -84,6 +84,13 @@ function getClickFunctionForName(name) {
 		case "zoom_out":
 			gizmo.setSize( Math.max( gizmo.size - 0.1, 0.1 ) );
 			break;
+		case "camera_follows_object":
+				if (cameraFollowsObjectFlag) {
+					cameraFollowsObjectFlag = false;
+				} else {
+					cameraFollowsObjectFlag = true;
+				}
+			break;
 		default: 
 			// not implemented
 	}
@@ -135,6 +142,7 @@ function populateObjectsMenu() {
 	addButtonToElement(document.getElementById("tab2_31"), "scale");
 	addButtonToElement(document.getElementById("tab2_32"), "zoom_in");
 	addButtonToElement(document.getElementById("tab2_33"), "zoom_out");
+	addButtonToElement(document.getElementById("tab2_34"), "camera_follows_object");
 	
 }
 

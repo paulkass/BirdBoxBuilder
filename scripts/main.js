@@ -20,6 +20,9 @@ var center = [Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2)]
 var mousePositionX = center[0];
 var mousePositionY = center[1];
 
+var pastReticlePosition = 0;
+var cameraFollowsObjectFlag = false;
+
 var grassPlanePower = 3;
 var grassPlaneSize = 5*Math.pow(2, grassPlanePower);
 var grassPlaneExtension = 300;
@@ -348,7 +351,23 @@ function updateSelectedObjectAndCamera() {
 }
 
 function updateReticle (cameraVector, worldVector) {
-	var reticleVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_RETICLE_SCALAR));
+	var reticleVector = new THREE.Vector3;
+	function populateReticleVector(a,b) {
+		return a.clone().add(b.clone().multiplyScalar(WORLD_TO_RETICLE_SCALAR));
+	}
+	reticleVector.copy(populateReticleVector(cameraVector, worldVector));
+	if (selectedObject!=0 && cameraFollowsObjectFlag) {
+		if (!selectedObject.position.equals(pastReticlePosition)) {
+			makeCameraLookAt(selectedObject.position.clone());
+			reticleVector.copy(populateReticleVector(cameraVector, camera.getWorldDirection().normalize()));
+		}
+	}
+	if (pastReticlePosition!=0) {
+		pastReticlePosition = userReticle.position.clone();
+	} else {
+		pastReticlePosition = reticleVector.clone();
+	}
+	
 	userReticle.position.set(reticleVector.x, reticleVector.y, reticleVector.z);
 }
 
@@ -411,10 +430,14 @@ function jumpCamera () {
 	placeVector.setY(camera.position.y);
 	camera.position.copy(placeVector.clone());
 	//console.log(JSON.stringify(cameraPosition));
-	camera.lookAt(cameraPosition);
-	camera.lookAtVector=cameraPosition.clone();
+	makeCameraLookAt(cameraPosition.clone());
 	
 	controls.replaceConstraint(camera);
+}
+
+function makeCameraLookAt(vector) {
+	camera.lookAt(vector);
+	camera.lookAtVector=vector.clone();
 }
 
 function setUpControlListeners() {
