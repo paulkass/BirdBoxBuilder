@@ -144,7 +144,6 @@ function addButtonToElement(parent, childName) {
 	objectDiv.setAttribute("class", "btn btn-success");
 	objectDiv.onclick = function () { var x = getClickFunctionForName(childName); };
 	var childText = names.getName(childName);
-	console.log("Child Text: "+childText);
 	objectDiv.appendChild(document.createTextNode(childText));
 	objectDiv.setAttribute("style", "font-family: 'Dancing Script', cursive;");
 	parent.appendChild(objectDiv);

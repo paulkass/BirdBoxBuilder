@@ -309,6 +309,11 @@ function generateTexture() {
 function render() {
 	updateSelectedObjectAndCamera();
 	stats.update();
+	scene.traverse(function (child) {
+		if (child.position.y<0) {
+			child.position.setY(0);
+		}
+	});
 	requestAnimationFrame( render );
 	renderer.render( scene, camera );
 }

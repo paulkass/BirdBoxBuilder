@@ -17,7 +17,6 @@ var Names = function() {
 	}
 	
 	this.getName = function(value) {
-		console.log(JSON.stringify(this.names[value]));
 		return this.names[value];
 	}
 };
