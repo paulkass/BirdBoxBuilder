@@ -6,6 +6,8 @@ var tabsWidth = (1-2*horizontalMarginFactor)*window.innerWidth;
 
 var iconLength = 0.5*tabsWidth;
 
+var names = new Names();
+
 var snap = false;
 var canvasArray = []; // scene, camera, renderer, rotation
 
@@ -64,7 +66,7 @@ function getClickFunctionForName(name) {
 			break;
 		case "snap_to_grid":
 			snap ? gizmo.setTranslationSnap(null) : gizmo.setTranslationSnap(1);
-			snap ? gizmo.setRotationSnap(null) : gizmo.setRotationSnap( THREE.Math.degToRad( 15 ) );
+			snap ? gizmo.setRotationSnap(null) : gizmo.setRotationSnap( WORLD_ROTATION_SNAP );
 			snap = !snap;
 			break;
 		case "translate":
@@ -110,12 +112,12 @@ function populateObjectsMenu() {
 		if (objectArray.length>0) {
 			objectArray.forEach(function (name) {
 				var element = document.getElementById("tab1_"+(Math.floor((cellCount)/4)+1)+""+((cellCount)%4+1));
-				addButtonToElement(element, name, name);
+				addButtonToElement(element, name);
 				cellCount++;
 			});
 		} else {
 			var element = document.getElementById("tab1_"+(Math.floor((cellCount)/4)+1)+""+((cellCount)%4+1));
-			addButtonToElement(element, type, type);
+			addButtonToElement(element, type);
 			cellCount++;
 		}
 	});
@@ -124,23 +126,25 @@ function populateObjectsMenu() {
 	tableToAdd = getTable(3,4, "tab2");
 	selectedObjectDiv.appendChild(tableToAdd);
 	cellCount = 1;
-	addButtonToElement(document.getElementById("tab2_11"), "place", "Place Object");
-	addButtonToElement(document.getElementById("tab2_12"), "unselect", "Unselect Object");
-	addButtonToElement(document.getElementById("tab2_21"), "toggle_space", "Toggle global/local space");
-	addButtonToElement(document.getElementById("tab2_22"), "snap_to_grid", "Toggle snap to grid");
-	addButtonToElement(document.getElementById("tab2_23"), "translate", "Set Translation mode");
-	addButtonToElement(document.getElementById("tab2_24"), "rotate", "Set rotation mode");
-	addButtonToElement(document.getElementById("tab2_31"), "scale", "Set scaling mode");
-	addButtonToElement(document.getElementById("tab2_32"), "zoom_in", "Enlarge Gizmo");
-	addButtonToElement(document.getElementById("tab2_33"), "zoom_out", "Shrink Gizmo");
+	addButtonToElement(document.getElementById("tab2_11"), "place");
+	addButtonToElement(document.getElementById("tab2_12"), "unselect");
+	addButtonToElement(document.getElementById("tab2_21"), "toggle_space");
+	addButtonToElement(document.getElementById("tab2_22"), "snap_to_grid");
+	addButtonToElement(document.getElementById("tab2_23"), "translate");
+	addButtonToElement(document.getElementById("tab2_24"), "rotate");
+	addButtonToElement(document.getElementById("tab2_31"), "scale");
+	addButtonToElement(document.getElementById("tab2_32"), "zoom_in");
+	addButtonToElement(document.getElementById("tab2_33"), "zoom_out");
 	
 }
 
-function addButtonToElement(parent, childName, childText) {
+function addButtonToElement(parent, childName) {
 	var objectDiv = document.createElement("BUTTON");
 	objectDiv.setAttribute("id", childName);
 	objectDiv.setAttribute("class", "btn btn-success");
 	objectDiv.onclick = function () { var x = getClickFunctionForName(childName); };
+	var childText = names.getName(childName);
+	console.log("Child Text: "+childText);
 	objectDiv.appendChild(document.createTextNode(childText));
 	objectDiv.setAttribute("style", "font-family: 'Dancing Script', cursive;");
 	parent.appendChild(objectDiv);
