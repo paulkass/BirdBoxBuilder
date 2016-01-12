@@ -222,21 +222,21 @@ function init() {
 	
 	window.addEventListener( 'resize', onWindowResize, false );
 
-	gizmo = new THREE.TransformControls(camera, renderer.domElement);
-	gizmo.setRotationSnap(WORLD_ROTATION_SNAP);
-	gizmo.setMode("translate");
-
 	var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 	scene.add(light);
 
 	var planeGeometry = new THREE.PlaneGeometry(1000,1000, 1,1);
 	planeGeometry.rotateX(Math.PI/2);
-	var planeMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide, transparent: true});
+	var planeMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide, transparent: false});
 	plane = new THREE.Mesh(planeGeometry, planeMaterial);
 	plane.position.y=-0.5;
 	plane.name = "plane";
 	scene.add(plane);
 	
+	gizmo = new THREE.TransformControls(camera, renderer.domElement);
+	gizmo.setRotationSnap(WORLD_ROTATION_SNAP);
+	gizmo.setMode("translate");
+
 	//addGrassMeshPlane(grassMeshArray);
 	
 	console.log("Added meshes to scene");
