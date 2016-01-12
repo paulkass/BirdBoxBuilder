@@ -114,6 +114,11 @@ function getClickFunctionForName(name) {
 				}
 			};
 			break;
+		case "toggle_grid":
+			returnFunction = function() {
+				togglePlaneGrid();
+			};
+			break;
 		default: 
 			// not implemented
 	}
@@ -166,6 +171,8 @@ function populateObjectsMenu() {
 	addButtonToElement(document.getElementById("tab2_32"), "zoom_in");
 	addButtonToElement(document.getElementById("tab2_33"), "zoom_out");
 	addButtonToElement(document.getElementById("tab2_34"), "camera_follows_object");
+	
+	addButtonToElement(document.getElementById("tab3_11"), "toggle_grid");
 	
 }
 

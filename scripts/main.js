@@ -10,7 +10,7 @@ var RETICLE_RADIUS = 0.001;
 var WORLD_TO_RETICLE_SCALAR = 0.2;
 var WORLD_TO_PLANK_SCALAR = 10;
 var OBJECT_SOURCES_ARRAY = ["tree1.json", "tree2.json", "house.json"];
-var TYPES = ["tree", "plank", "house"];
+var TYPES = ["tree", "plank", "house", "bird_hole_plank"];
 var ROTATION_UNIT = Math.PI/6;
 var INITIAL_PLANK_DIMENSIONS = [0.25,1.5,1.5] // [width, length, height]
 var WORLD_ROTATION_SNAP = Math.PI/12;
@@ -59,6 +59,7 @@ var renderer;
 var light;
 var plane;
 var grid;
+var gridName = "LolThisIsAGrid";
 var userReticle;
 
 var oldMatrix = null;
@@ -251,6 +252,7 @@ function init() {
 	scene.add( sphere );
 
 	grid = new THREE.GridHelper( 200, 10 );
+	grid.name = gridName;
 	grid.setColors( 0x000000, 0x000000 );
 	scene.add(grid);
 	var axisHelper = new THREE.AxisHelper( 5 );
@@ -438,6 +440,14 @@ function jumpCamera () {
 function makeCameraLookAt(vector) {
 	camera.lookAt(vector);
 	camera.lookAtVector=vector.clone();
+}
+
+function togglePlaneGrid() {
+	if (scene.getObjectByName(gridName) === undefined) {
+		scene.add(grid);
+	} else {
+		scene.remove(grid);
+	}
 }
 
 function setUpControlListeners() {
