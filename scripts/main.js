@@ -13,6 +13,7 @@ var OBJECT_SOURCES_ARRAY = ["tree1.json", "tree2.json", "house.json"];
 var TYPES = ["tree", "plank", "house"];
 var ROTATION_UNIT = Math.PI/6;
 var INITIAL_PLANK_DIMENSIONS = [0.25,1.5,1.5] // [width, length, height]
+var WORLD_ROTATION_SNAP = Math.PI/12;
 // ---------
 
 var center = [Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2)];
@@ -222,6 +223,7 @@ function init() {
 	window.addEventListener( 'resize', onWindowResize, false );
 
 	gizmo = new THREE.TransformControls(camera, renderer.domElement);
+	gizmo.setRotationSnap(WORLD_ROTATION_SNAP);
 	gizmo.setMode("translate");
 
 	var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
