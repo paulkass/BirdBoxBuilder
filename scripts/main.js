@@ -77,6 +77,8 @@ var wireframeMaterial = new THREE.MeshBasicMaterial({
 
 var loadCount = 0;
 
+var plankMaterial = new THREE.MeshBasicMaterial({color: 0x804000, fog: true, transparent: false, side: THREE.DoubleSide});
+
 //  **********************
 
 function onWindowResize() {
@@ -548,7 +550,6 @@ function getPlacementSpot() {
 }
 
 function addPlank () {
-	var plankMaterial = new THREE.MeshBasicMaterial({color: 0x804000, fog: true, transparent: false, side: THREE.DoubleSide});
 	
 	var plankGeometry = new THREE.Geometry();
 	var plankVertices = [
@@ -585,7 +586,11 @@ function addPlank () {
 }
 
 function addBirdHolePlank() {
-	console.log("Adding a Bird Hole Plank.");
+	var birdHoleGeometry = new BirdHolePlank(2,4,4,0.1, 32);
+	console.log(JSON.stringify(birdHoleGeometry.vertices));
+	//console.log(JSON.stringify(birdHoleGeometry.faces));
+	var birdHole = new THREE.Mesh(birdHoleGeometry, plankMaterial);
+	scene.add(birdHole);
 }
 
 function addTree (type) {
