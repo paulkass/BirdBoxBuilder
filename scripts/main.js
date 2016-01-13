@@ -79,7 +79,7 @@ var wireframeMaterial = new THREE.MeshBasicMaterial({
 
 var loadCount = 0;
 
-var plankMaterial = new THREE.MeshBasicMaterial({color: 0x804000, fog: true, transparent: false, side: THREE.DoubleSide});
+var plankMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, emissive: 0x804000, fog: true, transparent: false, side: THREE.DoubleSide});
 
 //  **********************
 
@@ -231,11 +231,11 @@ function init() {
 	window.addEventListener( 'resize', onWindowResize, false );
 
 	var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
-	scene.add(light);
+	//scene.add(light);
 
 	var planeGeometry = new THREE.PlaneGeometry(1000,1000, 1,1);
 	planeGeometry.rotateX(Math.PI/2);
-	var planeMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide, transparent: false});
+	var planeMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, emissive: 0xffffbb, side: THREE.DoubleSide, transparent: false});
 	plane = new THREE.Mesh(planeGeometry, planeMaterial);
 	plane.position.y=-0.5;
 	plane.name = "plane";
@@ -244,6 +244,10 @@ function init() {
 	gizmo = new THREE.TransformControls(camera, renderer.domElement);
 	gizmo.setRotationSnap(WORLD_ROTATION_SNAP);
 	gizmo.setMode("translate");
+	
+	var directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+	directionalLight.position.set( 0, 20, 0 );
+	scene.add( directionalLight );
 
 	//addGrassMeshPlane(grassMeshArray);
 	
