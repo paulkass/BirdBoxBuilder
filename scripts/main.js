@@ -13,6 +13,8 @@ var OBJECT_SOURCES_ARRAY = ["tree1.json", "tree2.json", "house.json"];
 var TYPES = ["tree", "plank", "house", "bird_hole_plank"];
 var ROTATION_UNIT = Math.PI/6;
 var INITIAL_PLANK_DIMENSIONS = [0.25,1.5,1.5] // [width, length, height]
+var BIRD_HOLE_RADIUS = 0.25;
+var BIRD_HOLE_SEGMENTS = 32;
 var WORLD_ROTATION_SNAP = Math.PI/12;
 // ---------
 
@@ -586,11 +588,9 @@ function addPlank () {
 }
 
 function addBirdHolePlank() {
-	var birdHoleGeometry = new BirdHolePlank(2,4,4,0.1, 32);
-	console.log(JSON.stringify(birdHoleGeometry.vertices));
-	//console.log(JSON.stringify(birdHoleGeometry.faces));
+	var birdHoleGeometry = new BirdHolePlank(INITIAL_PLANK_DIMENSIONS[0],INITIAL_PLANK_DIMENSIONS[1],INITIAL_PLANK_DIMENSIONS[2],BIRD_HOLE_RADIUS, BIRD_HOLE_SEGMENTS);
 	var birdHole = new THREE.Mesh(birdHoleGeometry, plankMaterial);
-	scene.add(birdHole);
+	addSelectedObject(birdHole, "bird_hole_plank", false);
 }
 
 function addTree (type) {

@@ -39,8 +39,8 @@ function BirdHolePlank(w, l, h, r, s) {
 	var circleVertices = [];
 	var angle = 2*Math.PI/this.segments;
 	for (var i=0; i<this.segments; i++) {
-		circleVertices.push(Math.cos(i*angle), this.height*0.5+Math.sin(i*angle), this.width);
-		circleVertices.push(Math.cos(i*angle), this.height*0.5+Math.sin(i*angle), -1*this.width);
+		circleVertices.push(this.radius*Math.cos(i*angle), this.height*0.5+this.radius*Math.sin(i*angle), this.width);
+		circleVertices.push(this.radius*Math.cos(i*angle), this.height*0.5+this.radius*Math.sin(i*angle), -1*this.width);
 	}
 	
 	var totalVertices = plankVertices.concat(circleVertices);
