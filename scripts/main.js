@@ -328,6 +328,7 @@ function updateSelectedObjectAndCamera() {
 	var worldVector = camera.getWorldDirection().clone().normalize();
 	updateReticle(cameraVector, worldVector);
 	 switch (selectedObjectType) {
+		case "bird_hole_plank":
 		case "plank" :
  			// var heldPosVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
 // 			//selectedObject.position.set(heldPosVector.x, heldPosVector.y, heldPosVector.z);
@@ -397,7 +398,7 @@ function raycast () {
 				oldMatrix = [objectToBeSelected.position.clone(), objectToBeSelected.quaternion.clone(), objectToBeSelected.scale.clone()];
 				addSelectedObject(objectToBeSelected, "tree", true);
 			} else {
-			
+				
 			}
 		//};
 	}
@@ -611,7 +612,7 @@ function addSelectedObject(obj, type, existing) {
 	if(!existing) {
 		selectedObject.name = type+""+getObjectIdCount();
 	}
-	if (type=="plank") {
+	if (type == "plank" || type == "bird_hole_plank") {
 		gizmo.attach(obj);
 		scene.add(gizmo);
 	}
@@ -718,7 +719,7 @@ function clearSelectedObject(remove, disableMenu) {
 	tracerLines = [];
 	if(disableMenu)
 		disableSelectedObjectMenu();
-	if(selectedObjectType == "plank") {
+	if(selectedObjectType == "plank" || selectedObjectType == "bird_hole_plank") {
 		gizmo.detach();
 		scene.remove(gizmo);
 	}
