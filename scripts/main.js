@@ -79,7 +79,7 @@ var wireframeMaterial = new THREE.MeshBasicMaterial({
 
 var loadCount = 0;
 
-var plankMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, emissive: 0x804000, fog: true, transparent: false, side: THREE.DoubleSide});
+var plankMaterial = new THREE.MeshLambertMaterial({color: 0x804000, emissive: 0x804000, fog: true, transparent: false, side: THREE.DoubleSide});
 
 //  **********************
 
@@ -217,6 +217,8 @@ function init() {
 	renderer.setClearColor( 0x003300 );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.shadowMap.enabled = true;
+	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 	document.body.appendChild( renderer.domElement );
 	
 	stats = new Stats();
@@ -230,16 +232,18 @@ function init() {
 	
 	window.addEventListener( 'resize', onWindowResize, false );
 
-	var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+	//var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 	//scene.add(light);
 
 	var planeGeometry = new THREE.PlaneGeometry(1000,1000, 1,1);
 	planeGeometry.rotateX(Math.PI/2);
-	var planeMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, emissive: 0xffffbb, side: THREE.DoubleSide, transparent: false});
+	var planeMaterial = new THREE.MeshPhongMaterial({color: 0xffffbb, side: THREE.DoubleSide});
 	plane = new THREE.Mesh(planeGeometry, planeMaterial);
 	plane.position.y=-0.5;
 	plane.name = "plane";
+	//plane.castShadow = false;
 	scene.add(plane);
+	plane.receiveShadow = true;
 	
 	gizmo = new THREE.TransformControls(camera, renderer.domElement);
 	gizmo.setRotationSnap(WORLD_ROTATION_SNAP);
@@ -247,7 +251,47 @@ function init() {
 	
 	var directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
 	directionalLight.position.set( 0, 20, 0 );
+	directionalLight.castShadow = true;
+	directionalLight.shadowDarkness = 0.5;
+	
+	// directionalLight.shadowMapWidth = 2048;
+// 	directionalLight.shadowMapHeight = 2048;
+// 	directionalLight.shadowMapDarkness = 0.75;
+	directionalLight.shadowCameraNear = -10;
+	directionalLight.shadowCameraFar = 1000;
+	directionalLight.shadowCameraRight = 50;
+	directionalLight.shadowCameraLeft = -50;
+	directionalLight.shadowCameraTop = 50;
+	directionalLight.shadowCameraBottom = -50;
+	
 	scene.add( directionalLight );
+
+	// var spotLight = new THREE.SpotLight("#EA8E12", 0.25);
+// 	spotLight.position.set(0,20,0);
+// 	spotLight.castShadow = true;
+// 	scene.add(spotLight);
+
+	// FOR DEBUGGING THE SHADOW ONLY
+	// *****************************
+	//directionalLight.shadowCameraVisible = true;
+	// var shadowCamera = new THREE.CameraHelper(directionalLight.shadow.camera);
+// 	scene.add(shadowCamera);
+// 	
+// 	var planeG = new THREE.PlaneGeometry(100,100);
+// 	var planeM = new THREE.MeshPhongMaterial({color: "#EA8E12", side: THREE.DoubleSide});
+// 	var planeO = new THREE.Mesh(planeG, planeM);
+// 	planeO.rotation.x = Math.PI/2;
+// 	planeO.receiveShadow = true;
+// 	scene.add(planeO);
+	
+	// var parent = new THREE.Object3D();
+	// var cubeG = new THREE.BoxGeometry(1,1,1);
+// 	var cube = new THREE.Mesh(cubeG, plankMaterial);
+// 	cube.position.y = 3;
+// 	cube.castShadow = true;
+// 	cube.receiveShadow = true;
+// 	scene.add(cube);
+	// *****************************
 
 	//addGrassMeshPlane(grassMeshArray);
 	
@@ -614,6 +658,7 @@ function addSelectedObject(obj, type, existing) {
 	}
 	selectedObject = obj;
 	selectedObjectType = type;
+	selectedObject.castShadow = true;
 	var cameraVector = camera.position.clone();
 	var worldVector = camera.getWorldDirection().clone().normalize();
 	var heldPosVector = cameraVector.add(worldVector.multiplyScalar(WORLD_TO_PLANK_SCALAR));
@@ -630,9 +675,11 @@ function addSelectedObject(obj, type, existing) {
         	var wh = new THREE.WireframeHelper( child, 0xff0000 );
         	wh.name = "wireframe"+wireframeArray.length;
         	wireframeArray.push(wh);
+        	wh.castShadow = true;
         	scene.add( wh );
     	}
 	});
+	
 	if(!existing) {
 		for (var i=0; i<selectedObject.children.length; i++) {
 			if (selectedObjectType == "tree") {
