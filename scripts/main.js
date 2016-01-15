@@ -369,6 +369,7 @@ function render() {
 	scene.traverse(function (child) {
 		if (child.position.y<0) {
 			child.position.setY(0);
+
 		}
 	});
 	requestAnimationFrame( render );
@@ -388,6 +389,8 @@ function updateSelectedObjectAndCamera() {
 // 			updateReticle(cameraVector, worldVector);
 // 			//selectedObject.lookAt(worldVector.add(cameraVector));
 // 			selectedObject.updateMatrix();
+			snap(selectedObject);
+			selectedObject.updateMatrix();
 			gizmo.update();
  			break;
  		case "tree":
@@ -453,29 +456,6 @@ function raycast () {
 				
 			}
 		//};
-	}
-}
-
-function rotateSelectedObject(direction) {
-	var upVector = new THREE.Vector3(0,1,0);
-	var orthVector = new THREE.Vector3(1,0,0);
-	if (selectedObject!=0) {
-		switch (direction) {
-			case "up":
-				selectedObject.rotateOnAxis(orthVector, -ROTATION_UNIT);
-				break;
-			case "down":
-				selectedObject.rotateOnAxis(orthVector, ROTATION_UNIT);
-				break;
-			case "left":
-				selectedObject.rotateOnAxis(upVector, -ROTATION_UNIT);
-				break;
-			case "right":
-				selectedObject.rotateOnAxis(upVector, ROTATION_UNIT);
-				break;
-			default:
-				console.log("rotateSelectedObject:: unknown direction "+direction);
-		}
 	}
 }
 
