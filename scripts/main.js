@@ -581,12 +581,8 @@ function getPlacementSpot() {
 
 function addPlank () {
 	
-	var plankGeom = new plankGeometry(INITIAL_PLANK_DIMENSIONS[0], INITIAL_PLANK_DIMENSIONS[1], INITIAL_PLANK_DIMENSIONS[2]);
-	
-	plankGeom.computeBoundingSphere();
-	//var plankGeometry = new THREE.BoxGeometry(1, 1, 1);
-	
-	var plank = new THREE.Mesh(plankGeom, plankMaterial);
+	var plank = new Plank(INITIAL_PLANK_DIMENSIONS[0], INITIAL_PLANK_DIMENSIONS[1], INITIAL_PLANK_DIMENSIONS[2]);
+	plank.geometry.computeBoundingSphere();
 	addSelectedObject(plank, "plank", false);
 }
 
