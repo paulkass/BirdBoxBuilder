@@ -581,37 +581,12 @@ function getPlacementSpot() {
 
 function addPlank () {
 	
-	var plankGeometry = new THREE.Geometry();
-	var plankVertices = [
-			INITIAL_PLANK_DIMENSIONS[1]/2,-INITIAL_PLANK_DIMENSIONS[2]/2,INITIAL_PLANK_DIMENSIONS[0]/2,
-			-INITIAL_PLANK_DIMENSIONS[1]/2,-INITIAL_PLANK_DIMENSIONS[2]/2,INITIAL_PLANK_DIMENSIONS[0]/2,
-			INITIAL_PLANK_DIMENSIONS[1]/2,-INITIAL_PLANK_DIMENSIONS[2]/2,-INITIAL_PLANK_DIMENSIONS[0]/2,
-			-INITIAL_PLANK_DIMENSIONS[1]/2,-INITIAL_PLANK_DIMENSIONS[2]/2,-INITIAL_PLANK_DIMENSIONS[0]/2,
-			INITIAL_PLANK_DIMENSIONS[1]/2,INITIAL_PLANK_DIMENSIONS[2]/2,INITIAL_PLANK_DIMENSIONS[0]/2,
-			-INITIAL_PLANK_DIMENSIONS[1]/2,INITIAL_PLANK_DIMENSIONS[2]/2,INITIAL_PLANK_DIMENSIONS[0]/2,
-			INITIAL_PLANK_DIMENSIONS[1]/2,INITIAL_PLANK_DIMENSIONS[2]/2,-INITIAL_PLANK_DIMENSIONS[0]/2,
-			-INITIAL_PLANK_DIMENSIONS[1]/2,INITIAL_PLANK_DIMENSIONS[2]/2,-INITIAL_PLANK_DIMENSIONS[0]/2,
-	];
-	var plankFaces = [
-		2,3,1,1,0,2,
-		0,4,6,6,2,0,
-		1,5,7,7,3,1,
-		0,1,5,5,4,0,
-		4,6,7,7,5,4,
-		2,6,7,7,3,2
-	];
+	var plankGeom = new plankGeometry(INITIAL_PLANK_DIMENSIONS[0], INITIAL_PLANK_DIMENSIONS[1], INITIAL_PLANK_DIMENSIONS[2]);
 	
-	for (var i=0; i<plankVertices.length; i+=3) {
-		plankGeometry.vertices.push(new THREE.Vector3(plankVertices[i], plankVertices[i+1], plankVertices[i+2]));
-	}
-	
-	for (var i=0; i<plankFaces.length; i+=3) {
-		plankGeometry.faces.push(new THREE.Face3(plankFaces[i], plankFaces[i+1], plankFaces[i+2]));
-	}
-	plankGeometry.computeBoundingSphere();
+	plankGeom.computeBoundingSphere();
 	//var plankGeometry = new THREE.BoxGeometry(1, 1, 1);
 	
-	var plank = new THREE.Mesh(plankGeometry, plankMaterial);
+	var plank = new THREE.Mesh(plankGeom, plankMaterial);
 	addSelectedObject(plank, "plank", false);
 }
 
