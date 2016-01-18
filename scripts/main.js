@@ -582,7 +582,7 @@ function getPlacementSpot() {
 function addPlank () {
 	
 	var plank = new Plank(INITIAL_PLANK_DIMENSIONS[0], INITIAL_PLANK_DIMENSIONS[1], INITIAL_PLANK_DIMENSIONS[2]);
-	plank.geometry.computeBoundingSphere();
+	plank.geometry.computeBoundingSphere(); 
 	addSelectedObject(plank, "plank", false);
 }
 
@@ -624,6 +624,13 @@ function addSelectedObject(obj, type, existing) {
 	selectedObject.traverse(function (child) {
     	if ( child instanceof THREE.Mesh ) {
         	var wh = new THREE.WireframeHelper( child, 0xff0000 );
+        	if (type == "plank" || type == "bird_hole_plank") {
+        		var shadowCaster = new THREE.WireframeHelper(child, selectedObject.material.color);
+        		//shadowCaster.material.transparent = true;
+        		shadowCaster.castShadow = true;
+        		//console.log("Wireframe position is "+JSON.stringify(shadowCaster.matrixWorld));
+        		scene.add(shadowCaster);
+        	}
         	wh.name = "wireframe"+wireframeArray.length;
         	wireframeArray.push(wh);
         	wh.castShadow = true;
