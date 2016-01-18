@@ -212,7 +212,7 @@
 
 			return function () {
 
-				var position = this.object.position;
+				var position = this.object.position.clone();
 
 				offset.copy( position ).sub( this.target );
 
@@ -255,6 +255,12 @@
 				offset.applyQuaternion( quatInverse );
 
 				position.copy( this.target ).add( offset );
+				
+				if (position.y <0) {
+					position.setY(0);
+				}
+				
+				this.object.position.copy(position);
 
 				this.object.lookAt( this.target );
 
