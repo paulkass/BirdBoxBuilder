@@ -3,8 +3,11 @@ function Plank(w,l,h) {
 	
 	this.getVectorsInWorldContext = function() {
 		var arr = [];
+		this.updateMatrixWorld();
+		var transformMatrix = this.matrixWorld;
+		//console.log(JSON.stringify(this.geometry.vertices));
 		this.geometry.vertices.forEach( function(v) {
-			arr.push(v.clone().applyMatrix4(this.matrixWorld));
+			arr.push(v.clone().applyMatrix4(transformMatrix.clone()));
 		});
 		return arr;
 	};
@@ -13,7 +16,7 @@ function Plank(w,l,h) {
 		var sortedVectorArr = [];
 		var unsortedVectorArr = this.getVectorsInWorldContext();
 		for (var trol = 0; trol<4; trol++) {
-			var shortestVector = new THREE.Vector3(Global.Infinity, Global.Infinity, Global.Infinity);
+			var shortestVector = new THREE.Vector3(Infinity, Infinity, Infinity);
 			var shortestVectorIndex = 0;
 			unsortedVectorArr.forEach(function (v, i) {
 				if (v.clone().sub(point).length() < shortestVector.clone().sub(point).length()) {
